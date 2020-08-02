@@ -9,6 +9,11 @@ spring:
   redis:
     host: 123.57.12.189
     port: 6379
+
 server:
   port: 8080
+
+mybatis:
+  config-location: classpath:mybatis/mybatis-config.xml
+  mapper-locations: classpath:mybatis/mapper/*.xml
 
