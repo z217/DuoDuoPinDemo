@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: duo-duo-pin-demo
+  datasource:
+    url: jdbc:mysql://localhost:3306/DuoDuoPin?serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: zzhswdmz
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 123.57.12.189
+    port: 6379
+server:
+  port: 8080
+
