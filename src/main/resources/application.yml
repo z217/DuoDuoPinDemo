@@ -9,6 +9,10 @@ spring:
   redis:
     host: 123.57.12.189
     port: 6379
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
 
 server:
   port: 8080

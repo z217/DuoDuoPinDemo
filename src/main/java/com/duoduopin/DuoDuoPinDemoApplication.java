@@ -7,7 +7,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
-@MapperScan(value = "com.duoduopin.mapper")
+@MapperScan(value = "com.duoduopin.dao")
 public class DuoDuoPinDemoApplication {
   public static void main(String[] args) {
     SpringApplication.run(DuoDuoPinDemoApplication.class, args);
