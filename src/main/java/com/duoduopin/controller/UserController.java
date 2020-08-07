@@ -45,14 +45,14 @@ public class UserController {
     if (user == null || !user.getPassword().equals(password))
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.USERNAME_OR_PASSWORD_ERROR), HttpStatus.NOT_FOUND);
-    TokenModel token = tokenManager.createToken(user.getId());
+    TokenModel token = tokenManager.createToken(user.getUserId());
     return new ResponseEntity<>(ResultModel.ok(token), HttpStatus.OK);
   }
   
-  @DeleteMapping("/login")
+  @DeleteMapping("/logout")
   @Authorization
   public ResponseEntity<ResultModel> logout(@CurrentUser User user) {
-    tokenManager.deleteToken(user.getId());
+    tokenManager.deleteToken(user.getUserId());
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
 }

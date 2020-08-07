@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duoduopin.dao.ShareBillMapper">
+    <insert id="insertShareBill">
+        insert into share_bill(user_id, type, description, address, time, price, latitude, longitude, geohash)
+        VALUES (#{userId}, #{type}, #{description}, #{address}, #{time}, #{price}, #{latitude}, #{longitude}, #{geohash})
+    </insert>
+    <delete id="deleteShareBill">
+        delete from share_bill where bill_id = #{billId}
+    </delete>
+    <select id="getShareBillsByUserId" resultType="com.duoduopin.bean.ShareBill">
+        select * from share_bill where user_id = #{userId}
+    </select>
+    <select id="getShareBillByBillId" resultType="com.duoduopin.bean.ShareBill">
+        select * from share_bill where bill_id = #{billId}
+    </select>
+    <select id="getUserIdByBillId" resultType="java.lang.Long">
+        select user_id from share_bill where bill_id = #{billId}
+    </select>
+</mapper>

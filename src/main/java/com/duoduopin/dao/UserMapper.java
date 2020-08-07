@@ -3,7 +3,7 @@ package com.duoduopin.dao;
 import com.duoduopin.bean.User;
 
 public interface UserMapper {
-  User getUserById(long id);
+  User getUserById(long userId);
   
   User getUserByUsername(String username);
   

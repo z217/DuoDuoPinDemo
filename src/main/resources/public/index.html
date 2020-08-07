@@ -32,9 +32,29 @@
   <input type="submit" value="注册"/><br/>
 </form>
 <h1>登出</h1>
-<form action="/login" method="post">
+<form action="/logout" method="post">
   <input name="_method" type="hidden" value="delete">
   <input type="submit" value="登出"/><br/>
+</form>
+<h1>添加拼单</h1>
+<form action="/ShareBill/add" method="post">
+  <input name="_method" type="hidden" value="put">
+  <label>
+    类型：
+    <select name="type">
+      <option>MEAL</option>
+      <option>CAR</option>
+      <option>HOUSE</option>
+      <option>OTHER</option>
+    </select>
+  </label><br/>
+  <label>描述：<input max="50" name="description" type="text"/></label><br/>
+  <label>地址：<input max="50" name="address" type="text"/></label><br/>
+  <label>时间：<input name="time" step="1" type="time"/></label><br/>
+  <label>预计价格：<input name="price" step="0.01" type="number"/></label><br/>
+  <label>经度：<input name="longitude" step="0.000001" type="number"/></label><br/>
+  <label>纬度：<input name="latitude" step="0.000001" type="number"/></label><br/>
+  <input type="submit" value="提交">
 </form>
 </body>
 </html>
