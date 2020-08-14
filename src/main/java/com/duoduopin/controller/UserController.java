@@ -14,7 +14,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * 用户控制器
+ *
+ * @author z217
+ * @date 2020/08/03
+ */
 @RestController
+@RequestMapping("user")
 public class UserController {
   @Autowired
   private UserMapper userMapper;

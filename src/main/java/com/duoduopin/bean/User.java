@@ -3,6 +3,9 @@ package com.duoduopin.bean;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * User实体类
+ */
 @Getter
 @Setter
 public class User {
