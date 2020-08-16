@@ -2,13 +2,14 @@ spring:
   application:
     name: duo-duo-pin-demo
   datasource:
-    url: jdbc:mysql://localhost:3306/DuoDuoPin?serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://123.57.12.189:3306/DuoDuoPin?serverTimezone=GMT%2B8&useSSL=false&tcpKeepAlive=true
     username: root
     password: zzhswdmz
     driver-class-name: com.mysql.cj.jdbc.Driver
   redis:
     host: 123.57.12.189
     port: 6379
+    password: redisz217
   mvc:
     hiddenmethod:
       filter:
@@ -21,3 +22,5 @@ mybatis:
   config-location: classpath:mybatis/mybatis-config.xml
   mapper-locations: classpath:mybatis/mapper/*.xml
 
+logging:
+  level: warn

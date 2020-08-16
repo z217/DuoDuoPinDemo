@@ -14,7 +14,7 @@ public enum ResultStatus {
   USERNAME_EXIST(-1004, "username already exists"),
   BILL_NOT_FOUND(-1005, "share bill not found"),
   UNAUTHORITY(-1006, "Insufficient authority"),
-  UNKOWN(-1007, "unkown problem");
+  UNKOWN(-1007, "unknown problem");
   private int code;
   private String message;
   

@@ -35,9 +35,9 @@
         from share_bill
         <where>
             <if test="type != null">type = #{type}</if>
-            <if test="description != null">and (
+            <if test="descriptions != null">and (
                 <foreach collection="descriptions" item="description" index="index">
-                    description like <trim prefix="%" suffix="%">#{description}</trim> or
+                    description like concat(#{description}, '%') or
                 </foreach>
                 1=0)
             </if>
@@ -46,7 +46,7 @@
             <if test="distance != null">
                 and (
                 <foreach collection="geohashs" item="hash" index="index">
-                    geohash like <trim suffix="%">#{hash}</trim> or
+                    geohash like concat(#{hash}, '%') or
                 </foreach>
                 1=0)
             </if>

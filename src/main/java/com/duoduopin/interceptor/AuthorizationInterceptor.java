@@ -13,13 +13,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
+/**
+ * 自定义拦截器，判断此次请求是否有权限
+ *
+ * @author ScienJus
+ * @date 2015/07/30.
+ * @see com.duoduopin.annotation.Authorization
+ */
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
   @Autowired private TokenManager manager;
-
+  
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-      throws Exception {
+    throws Exception {
     //    忽略非映射方法
     if (!(handler instanceof HandlerMethod)) return true;
     Method method = ((HandlerMethod) handler).getMethod();

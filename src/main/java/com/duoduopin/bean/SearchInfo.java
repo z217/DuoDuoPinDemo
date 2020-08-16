@@ -36,10 +36,10 @@ public class SearchInfo {
       public void setGeohashs(double longitude, double latitude, String[] geohashs) {
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 6);
         GeoHash[] adjacent = geoHash.getAdjacent();
-        geohashs[0] = geoHash.toString();
+        geohashs[0] = geoHash.toBase32();
         int i = 1;
         for (GeoHash hash : adjacent) {
-          geohashs[i++] = hash.toString();
+          geohashs[i++] = hash.toBase32();
         }
       }
 
@@ -53,10 +53,10 @@ public class SearchInfo {
       public void setGeohashs(double longitude, double latitude, String[] geohashs) {
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 6);
         GeoHash[] adjacent = geoHash.getAdjacent();
-        geohashs[0] = geoHash.toString();
+        geohashs[0] = geoHash.toBase32();
         int i = 1;
         for (GeoHash hash : adjacent) {
-          geohashs[i++] = hash.toString();
+          geohashs[i++] = hash.toBase32();
         }
       }
 
@@ -70,10 +70,10 @@ public class SearchInfo {
       public void setGeohashs(double longitude, double latitude, String[] geohashs) {
         GeoHash geoHash = GeoHash.withCharacterPrecision(latitude, longitude, 5);
         GeoHash[] adjacent = geoHash.getAdjacent();
-        geohashs[0] = geoHash.toString();
+        geohashs[0] = geoHash.toBase32();
         int i = 1;
         for (GeoHash hash : adjacent) {
-          geohashs[i++] = hash.toString();
+          geohashs[i++] = hash.toBase32();
         }
       }
 

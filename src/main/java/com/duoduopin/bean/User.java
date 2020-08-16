@@ -4,7 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * User实体类
+ * 用户数据的domain类
+ *
+ * @author ScienJus
+ * @date 2015/07/31.
  */
 @Getter
 @Setter

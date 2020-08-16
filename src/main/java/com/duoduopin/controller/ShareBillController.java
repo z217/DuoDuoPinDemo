@@ -24,6 +24,7 @@ import java.util.List;
  *
  * @author z217
  * @date 2020/08/14
+ * @see com.duoduopin.service.ShareBillService
  */
 @RestController
 @RequestMapping("/ShareBill")
@@ -66,6 +67,11 @@ public class ShareBillController {
   @PostMapping("/info")
   public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchInfo info) {
     return shareBillService.getShareBillBySearchInfo(info);
+  }
+  
+  @PostMapping("/user/{id}")
+  public List<ShareBill> getShareBillsByUesrId(@PathVariable("id") long userId) {
+    return shareBillService.getShareBillsByUserId(userId);
   }
   
   @Authorization

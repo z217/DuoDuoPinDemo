@@ -19,7 +19,7 @@ public class Spatial4jMangerImpl implements Spatial4jManager {
 
   @Override
   public String getGeohash(double longitude, double latitude) {
-    return GeohashUtils.encodeLatLon(latitude, longitude);
+    return GeohashUtils.encodeLatLon(latitude, longitude, 11);
   }
 
   @Override
