@@ -34,10 +34,10 @@
         select *
         from share_bill
         <where>
-            <if test="type != null">type = #{type}</if>
+            <if test="type != null">type = #{param1}</if>
             <if test="descriptions != null">and (
-                <foreach collection="descriptions" item="description" index="index">
-                    description like concat(#{description}, '%') or
+                <foreach collection="descriptions" item="desc">
+                    description like concat('%', #{desc}, '%') or
                 </foreach>
                 1=0)
             </if>
@@ -45,7 +45,7 @@
             <if test="minPrice != null and maxPrice != null">and (price between #{minPrice} and #{maxPrice})</if>
             <if test="distance != null">
                 and (
-                <foreach collection="geohashs" item="hash" index="index">
+                <foreach collection="geohashs" item="hash">
                     geohash like concat(#{hash}, '%') or
                 </foreach>
                 1=0)

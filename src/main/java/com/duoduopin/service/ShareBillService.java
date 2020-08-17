@@ -60,7 +60,7 @@ public class ShareBillService {
         + userId
         + ", exec in ShareBillService.createShareBill().");
   }
-  
+
   public ShareBill getShareBillByBillId(long billId) {
     return shareBillMapper.getShareBillByBillId(billId);
   }
@@ -72,7 +72,18 @@ public class ShareBillService {
   public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchInfo info) {
     if (info.getDistance() != null && info.getLongitude() != null && info.getLatitude() != null)
       info.getDistance().setGeohashs(info.getLongitude(), info.getLatitude(), info.getGeohashs());
-    List<ShareBill> shareBills = shareBillMapper.getShareBillsBySearchInfo(info);
+    String[] descriptions = null;
+    if (info.getDescription() != null) descriptions = info.getDescription().split(" ");
+    List<ShareBill> shareBills =
+      shareBillMapper.getShareBillsBySearchInfo(
+        info.getType(),
+        descriptions,
+        info.getStartTime(),
+        info.getEndTime(),
+        info.getMinPrice(),
+        info.getMaxPrice(),
+        info.getGeohashs(),
+        info.getDistance());
     log.info(
       "Sharebills are got by searchinfo, exec in ShareBillService.getShareBillBySearchInfo()");
     List<ShareBillWithDistance> shareBillWithDistances = new LinkedList<>();

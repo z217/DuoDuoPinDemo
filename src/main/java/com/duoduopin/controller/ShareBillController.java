@@ -70,7 +70,7 @@ public class ShareBillController {
   }
   
   @PostMapping("/user/{id}")
-  public List<ShareBill> getShareBillsByUesrId(@PathVariable("id") long userId) {
+  public List<ShareBill> getShareBillsByUserId(@PathVariable("id") long userId) {
     return shareBillService.getShareBillsByUserId(userId);
   }
   

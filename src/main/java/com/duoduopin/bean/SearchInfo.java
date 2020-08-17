@@ -19,7 +19,7 @@ import java.util.List;
 @Setter
 public class SearchInfo {
   private BillType type;
-  private String[] descriptions;
+  private String description;
   private Timestamp startTime;
   private Timestamp endTime;
   private BigDecimal minPrice;
@@ -28,8 +28,10 @@ public class SearchInfo {
   private Double latitude;
   private String[] geohashs = new String[9];
   private Distance distance;
-
-  /** 可选的距离枚举 */
+  
+  /**
+   * 可选的距离枚举
+   */
   public static enum Distance {
     M500 {
       @Override
@@ -76,15 +78,15 @@ public class SearchInfo {
           geohashs[i++] = hash.toBase32();
         }
       }
-
+  
       @Override
       public void distanceFilter(List<ShareBillWithDistance> shareBills) {
         shareBills.removeIf(shareBill -> shareBill.getDistance() > 2.000);
       }
     };
-
+    
     public abstract void setGeohashs(double longitude, double latitude, String[] geohashs);
-
+    
     public abstract void distanceFilter(List<ShareBillWithDistance> shareBills);
   }
 }
