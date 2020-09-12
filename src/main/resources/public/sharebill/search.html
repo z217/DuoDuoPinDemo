@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Duo Duo Pin Demo</title>
+  <script crossorigin="anonymous"
+          integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0="
+          src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="../script/httprequest.js"></script>
+</head>
+<body>
+<h1>拼单搜索</h1>
+<h2><a href="create.html">创建拼单</a></h2>
+<script>
+  function search() {
+    let type = $('#search-form > label:nth-child(1) > select').val();
+    let description = $('#search-form > label:nth-child(3) > input').val();
+    let startTime = $('#search-form > label:nth-child(5) > input').val();
+    let endTime = $('#search-form > label:nth-child(7) > input').val();
+    let minPrice = $('#search-form > label:nth-child(9) > input').val();
+    let maxPrice = $('#search-form > label:nth-child(11) > input').val();
+    let longitude = $('#search-form > label:nth-child(13) > input').val();
+    let latitude = $('#search-form > label:nth-child(15) > input').val();
+    let distance = $('#search-form > label:nth-child(17) > select').val();
+    if (longitude === "" || latitude === "") {
+      $('#search-form > p').text('请输入经纬度');
+      return;
+    }
+    let results = sendJSON('POST', baseUrl + 'ShareBill/info', false, {
+      type: type === 'null' ? null : type,
+      description: description,
+      startTime: startTime,
+      endTime: endTime,
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      longitude: longitude,
+      latitude: latitude,
+      distance: distance === 'null' ? null : distance,
+    }, sessionStorage.getItem('id'), sessionStorage.getItem('token'));
+    let table = $('#search-result > table');
+    table.html('<tr>\n' +
+      '      <td>描述</td>\n' +
+      '      <td>地址</td>\n' +
+      '      <td>时间</td>\n' +
+      '      <td>价格</td>\n' +
+      '      <td>当前人数</td>\n' +
+      '      <td>总人数</td>\n' +
+      '      <td>距离</td>\n' +
+      '    </tr>')
+    for (let i in results)
+      table.html(table.html() + '<tr><td>' + results[i].description + '</td><td>' + results[i].address + '</td><td>' + results[i].time + '</td><td>' + results[i].price + '</td><td>' + results[i].curPeople + '</td><td>' + results[i].maxPeople + '</td><td>' + results[i].distance + '</td></tr>');
+  }
+</script>
+<form id="search-form">
+  <label>类型：<select name="type">
+    <option value="null">ALL</option>
+    <option value="MEAL">MEAL</option>
+    <option value="CAR">CAR</option>
+    <option value="HOUSE">HOUSE</option>
+    <option value="OTHER">OTHER</option>
+  </select></label><br/>
+  <label>描述：<input name="description" type="text" value=""/></label><br/>
+  <label>开始时间：<input name="startTime" step="1" type="datetime-local" value=""/></label><br/>
+  <label>结束时间：<input name="endTime" step="1" type="datetime-local" value=""/></label><br/>
+  <label>最低价格：<input name="minPrice" step="0.01" type="number" value=""/></label><br/>
+  <label>最高价格：<input name="maxPrice" step="0.01" type="number" value=""/></label><br/>
+  <label>您的经度：<input name="longitude" step="0.000001" type="number" value=""/></label><br/>
+  <label>您的纬度：<input name="latitude" step="0.000001" type="number" value=""/></label><br/>
+  <label>距离：<select name="distance">
+    <option value="null">NONE</option>
+    <option value="M500">500m</option>
+    <option value="KM1">1km</option>
+    <option value="KM2">2KM</option>
+  </select> </label><br/>
+  <p style="color: red"></p>
+  <label><input onclick="search()" type="button" value="搜索"/>&nbsp;</label><br/>
+</form>
+<div id="search-result">
+  <table>
+    <tr>
+      <td>描述</td>
+      <td>地址</td>
+      <td>时间</td>
+      <td>价格</td>
+      <td>当前人数</td>
+      <td>总人数</td>
+      <td>距离</td>
+    </tr>
+  </table>
+</div>
+</body>
+</html>

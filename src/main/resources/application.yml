@@ -10,6 +10,12 @@ spring:
     host: 123.57.12.189
     port: 6379
     password: redisz217
+    timeout: 60s
+    lettuce:
+      pool:
+        max-idle: 30
+        max-active: 8
+        min-idle: 10
   mvc:
     hiddenmethod:
       filter:

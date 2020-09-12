@@ -1,12 +1,12 @@
 package com.duoduopin.service;
 
-import com.duoduopin.bean.SearchInfo;
 import com.duoduopin.bean.ShareBill;
 import com.duoduopin.bean.ShareBillWithDistance;
 import com.duoduopin.config.BillType;
 import com.duoduopin.config.Constants;
 import com.duoduopin.dao.ShareBillMapper;
 import com.duoduopin.manager.Spatial4jManager;
+import com.duoduopin.pojo.SearchPOJO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -60,7 +60,7 @@ public class ShareBillService {
         + userId
         + ", exec in ShareBillService.createShareBill().");
   }
-
+  
   public ShareBill getShareBillByBillId(long billId) {
     return shareBillMapper.getShareBillByBillId(billId);
   }
@@ -69,7 +69,7 @@ public class ShareBillService {
     return shareBillMapper.getShareBillsByUserId(userId);
   }
   
-  public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchInfo info) {
+  public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchPOJO info) {
     if (info.getDistance() != null && info.getLongitude() != null && info.getLatitude() != null)
       info.getDistance().setGeohashs(info.getLongitude(), info.getLatitude(), info.getGeohashs());
     String[] descriptions = null;

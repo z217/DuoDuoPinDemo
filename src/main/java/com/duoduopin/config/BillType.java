@@ -7,6 +7,7 @@ package com.duoduopin.config;
  * @date 2020/08/07
  */
 public enum BillType {
+  ALL,
   MEAL,
   CAR,
   HOUSE,

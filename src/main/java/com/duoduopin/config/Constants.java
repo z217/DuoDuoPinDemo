@@ -12,7 +12,7 @@ public abstract class Constants {
   //  token有效期
   public static final int TOKEN_EXPIRES_HOUR = 72;
   //  存放Authorization的header字段
-  public static final String AUTHORIZATION = "Authorization";
+  public static final String AUTHORIZATION = "token";
   //  管理员账户id
   public static final Long[] ADMIN_ID = new Long[1];
   

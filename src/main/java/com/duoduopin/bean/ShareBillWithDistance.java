@@ -1,6 +1,7 @@
 package com.duoduopin.bean;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -11,11 +12,16 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ShareBillWithDistance extends ShareBill {
   private double distance;
-
+  
   public ShareBillWithDistance(ShareBill shareBill, double distance) {
     super(shareBill);
     this.distance = distance;
+  }
+  
+  public ShareBillWithDistance(ShareBill shareBill) {
+    super(shareBill);
   }
 }

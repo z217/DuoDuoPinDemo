@@ -34,7 +34,7 @@
         select *
         from share_bill
         <where>
-            <if test="type != null">type = #{param1}</if>
+            <if test="type != null">type = #{type}</if>
             <if test="descriptions != null">and (
                 <foreach collection="descriptions" item="desc">
                     description like concat('%', #{desc}, '%') or

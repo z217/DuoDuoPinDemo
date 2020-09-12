@@ -1,9 +1,11 @@
-package com.duoduopin.bean;
+package com.duoduopin.pojo;
 
 import ch.hsr.geohash.GeoHash;
+import com.duoduopin.bean.ShareBillWithDistance;
 import com.duoduopin.config.BillType;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -17,7 +19,8 @@ import java.util.List;
  */
 @Getter
 @Setter
-public class SearchInfo {
+@ToString
+public class SearchPOJO {
   private BillType type;
   private String description;
   private Timestamp startTime;
@@ -33,6 +36,15 @@ public class SearchInfo {
    * 可选的距离枚举
    */
   public static enum Distance {
+    NONE {
+      @Override
+      public void setGeohashs(double longitude, double latitude, String[] geohashs) {
+      }
+      
+      @Override
+      public void distanceFilter(List<ShareBillWithDistance> shareBills) {
+      }
+    },
     M500 {
       @Override
       public void setGeohashs(double longitude, double latitude, String[] geohashs) {
@@ -78,15 +90,15 @@ public class SearchInfo {
           geohashs[i++] = hash.toBase32();
         }
       }
-  
+
       @Override
       public void distanceFilter(List<ShareBillWithDistance> shareBills) {
         shareBills.removeIf(shareBill -> shareBill.getDistance() > 2.000);
       }
     };
-    
+
     public abstract void setGeohashs(double longitude, double latitude, String[] geohashs);
-    
+
     public abstract void distanceFilter(List<ShareBillWithDistance> shareBills);
   }
 }

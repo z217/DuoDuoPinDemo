@@ -1,8 +1,8 @@
 package com.duoduopin.dao;
 
-import com.duoduopin.bean.SearchInfo;
 import com.duoduopin.bean.ShareBill;
 import com.duoduopin.config.BillType;
+import com.duoduopin.pojo.SearchPOJO;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ public interface ShareBillMapper {
     @Param("minPrice") BigDecimal minPrice,
     @Param("maxPrice") BigDecimal maxPrice,
     @Param("geohashs") String[] geohashs,
-    @Param("distance") SearchInfo.Distance distance);
+    @Param("distance") SearchPOJO.Distance distance);
   
   public void deleteShareBill(long billId);
 }

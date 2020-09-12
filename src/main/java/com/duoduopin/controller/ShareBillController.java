@@ -2,21 +2,19 @@ package com.duoduopin.controller;
 
 import com.duoduopin.annotation.Authorization;
 import com.duoduopin.annotation.CurrentUser;
-import com.duoduopin.bean.SearchInfo;
 import com.duoduopin.bean.ShareBill;
 import com.duoduopin.bean.ShareBillWithDistance;
 import com.duoduopin.bean.User;
-import com.duoduopin.config.BillType;
 import com.duoduopin.config.ResultStatus;
 import com.duoduopin.model.ResultModel;
+import com.duoduopin.pojo.AddShareBillPOJO;
+import com.duoduopin.pojo.SearchPOJO;
 import com.duoduopin.service.ShareBillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -26,8 +24,9 @@ import java.util.List;
  * @date 2020/08/14
  * @see com.duoduopin.service.ShareBillService
  */
+@CrossOrigin("*")
 @RestController
-@RequestMapping("/ShareBill")
+@RequestMapping(value = "/ShareBill", produces = "application/json;charset=UTF-8")
 public class ShareBillController {
   @Autowired
   public ShareBillService shareBillService;
@@ -35,37 +34,28 @@ public class ShareBillController {
   @Authorization
   @PutMapping("/add")
   public ResponseEntity<ResultModel> addShareBill(
-    @CurrentUser User user,
-    @RequestParam BillType type,
-    @RequestParam String description,
-    @RequestParam String address,
-    @RequestParam Timestamp time,
-    @RequestParam int curPeople,
-    @RequestParam int maxPeople,
-    @RequestParam BigDecimal price,
-    @RequestParam double longitude,
-    @RequestParam double latitude) {
+    @CurrentUser User user, @RequestBody AddShareBillPOJO shareBill) {
     shareBillService.createShareBill(
       user.getUserId(),
-      type,
-      description,
-      address,
-      time,
-      curPeople,
-      maxPeople,
-      price,
-      longitude,
-      latitude);
+      shareBill.getType(),
+      shareBill.getDescription(),
+      shareBill.getAddress(),
+      shareBill.getTime(),
+      1,
+      shareBill.getMaxPeople(),
+      shareBill.getPrice(),
+      shareBill.getLongitude(),
+      shareBill.getLatitude());
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
-  
+
   @PostMapping("/{id}")
   public ShareBill getShareBill(@PathVariable("id") long billId) {
     return shareBillService.getShareBillByBillId(billId);
   }
   
   @PostMapping("/info")
-  public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchInfo info) {
+  public List<ShareBillWithDistance> getShareBillBySearchInfo(@RequestBody SearchPOJO info) {
     return shareBillService.getShareBillBySearchInfo(info);
   }
   

@@ -2,6 +2,7 @@ package com.duoduopin.bean;
 
 import com.duoduopin.config.BillType;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
+@NoArgsConstructor
 public class ShareBill {
   protected long billId;
   protected long userId;
