@@ -29,9 +29,9 @@ public class UserController {
   private UserService userService;
   
   @PutMapping("/register")
-  public ResponseEntity<ResultModel> register(
-    @RequestBody RegisterPOJO registerPOJO) {
-    if (!userService.createUser(registerPOJO.getUsername(), registerPOJO.getNickname(), registerPOJO.getPassword()))
+  public ResponseEntity<ResultModel> register(@RequestBody RegisterPOJO registerPOJO) {
+    if (!userService.createUser(
+      registerPOJO.getUsername(), registerPOJO.getNickname(), registerPOJO.getPassword()))
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.USERNAME_EXIST), HttpStatus.NOT_ACCEPTABLE);
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
@@ -45,11 +45,21 @@ public class UserController {
         ResultModel.error(ResultStatus.USERNAME_OR_PASSWORD_ERROR), HttpStatus.NOT_FOUND);
     return new ResponseEntity<>(ResultModel.ok(token), HttpStatus.OK);
   }
-
+  
   @DeleteMapping("/logout")
   @Authorization
   public ResponseEntity<ResultModel> logout(@CurrentUser User user) {
     userService.userLogout(user);
+    return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
+  }
+  
+  @DeleteMapping("delete/{id}")
+  @Authorization
+  public ResponseEntity<ResultModel> deleteUser(
+    @CurrentUser User user, @PathVariable("id") long userId) {
+    if (!userService.deleteUser(user, userId)) {
+      return new ResponseEntity<>(ResultModel.error(ResultStatus.UNAUTHORITY), HttpStatus.UNAUTHORIZED);
+    }
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
 }

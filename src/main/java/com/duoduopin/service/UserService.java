@@ -1,6 +1,7 @@
 package com.duoduopin.service;
 
 import com.duoduopin.bean.User;
+import com.duoduopin.config.Constants;
 import com.duoduopin.dao.UserMapper;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
@@ -42,9 +43,23 @@ public class UserService {
     log.info(username + " login success, token is created, exec in UserService.userLogin().");
     return token;
   }
-
+  
   public void userLogout(User user) {
     tokenManager.deleteToken(user.getUserId());
     log.info(user.getUsername() + " logout");
+  }
+  
+  public boolean deleteUser(User user, long userId) {
+    if (!Constants.checkIfAdmin(user.getUserId())) {
+      log.warn(
+        "An authorized delete is requested by "
+          + user.getUserId()
+          + ", exec in UserService.deleteUser().");
+      return false;
+    }
+    userMapper.deleteUser(userId);
+    log.info(
+      userId + " was deleted by " + user.getUserId() + ", exec in UserService.deleteUser().");
+    return true;
   }
 }

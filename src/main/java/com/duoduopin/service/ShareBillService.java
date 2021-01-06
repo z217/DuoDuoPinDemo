@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,6 +32,7 @@ public class ShareBillService {
   
   public Long createShareBill(
     long userId,
+    String title,
     BillType type,
     String description,
     String address,
@@ -46,6 +46,7 @@ public class ShareBillService {
     ShareBill shareBill =
       new ShareBill(
         userId,
+        title,
         type,
         description,
         address,
@@ -71,7 +72,7 @@ public class ShareBillService {
   public List<ShareBill> getShareBillsByUserId(long userId) {
     return shareBillMapper.getShareBillsByUserId(userId);
   }
-  
+
   public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchPOJO info) {
     if (info.getDistance() != null && info.getLongitude() != null && info.getLatitude() != null)
       info.getDistance().setGeohashs(info.getLongitude(), info.getLatitude(), info.getGeohashs());
@@ -108,10 +109,9 @@ public class ShareBillService {
   }
 
   public boolean deleteShareBill(long billId, long userId) {
-    if (Arrays.binarySearch(Constants.ADMIN_ID, userId) < 0
-      && shareBillMapper.getUserIdByBillId(billId) != userId) {
+    if (!Constants.checkIfAdmin(userId) && shareBillMapper.getUserIdByBillId(billId) != userId) {
       log.warn(
-        "An unauthorized delete is done by "
+        "An unauthorized delete is requested by "
           + userId
           + ", exec in ShareBillService.deleteShareBill().");
       return false;

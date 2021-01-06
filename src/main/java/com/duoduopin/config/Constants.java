@@ -1,5 +1,7 @@
 package com.duoduopin.config;
 
+import java.util.Arrays;
+
 /**
  * 常量
  *
@@ -18,5 +20,9 @@ public abstract class Constants {
   
   static {
     ADMIN_ID[0] = 1L;
+  }
+  
+  public static boolean checkIfAdmin(Long id) {
+    return Arrays.binarySearch(ADMIN_ID, id) >= 0;
   }
 }

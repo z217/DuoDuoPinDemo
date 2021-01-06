@@ -42,6 +42,7 @@ public class ShareBillController {
     carrier.setId(
       shareBillService.createShareBill(
         user.getUserId(),
+        shareBill.getTitle(),
         shareBill.getType(),
         shareBill.getDescription(),
         shareBill.getAddress(),

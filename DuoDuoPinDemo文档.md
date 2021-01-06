@@ -48,6 +48,17 @@ http://123.57.12.189:8080/User/logout
 
 登出后令牌有效期清零，无法使用。
 
+### 1.4 删除用户
+
+$DELETE$ 方式发送至
+
+```url
+http://123.57.12.189:8080/User/delete/{id}
+```
+
+将路径上的 $\{id\}$ 替换为待删除的用户 $id$ 即可  
+要求管理员进行该操作
+
 ## 2. 拼单
 
 以后可能会添加分页。按序排列在分页之后实现。
@@ -56,10 +67,11 @@ http://123.57.12.189:8080/User/logout
 
 $token$ : [用户 $id$] + "_" + $token$  
 参数：  
-$type$ : [$MEAL$, $CAR$, $HOUSE$, $OTHER$]，分别对应拼餐、拼车、拼房、其他  
+$type$ : [$BILL$, $CAR$]，分别对应拼单、拼车   
+$title$ : 标题  
 $description$ : 描述  
 $address$ : 详细地址  
-$time$ : 时间，以 $yyyy-MM-dd hh:mm:ss$ 格式发送（秒数可以统一设置为 $00$）  
+$time$ : 时间，以 $yyyy-MM-ddThh:mm:ss$ 格式发送（秒数可以统一设置为 $00$）  
 $curPeople$ : 当前人数（默认为 $1$）  
 $maxPeople$ : 最大人数  
 $price$ : 预计价格  

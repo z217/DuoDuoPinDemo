@@ -4,9 +4,10 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.duoduopin.dao.ShareBillMapper">
     <insert id="insertShareBill">
-        insert into share_bill(user_id, type, description, address, time, cur_people, max_people, price, latitude,
+        insert into share_bill(user_id, title, type, description, address, time, cur_people, max_people, price,
+                               latitude,
                                longitude, geohash)
-        VALUES (#{userId}, #{type}, #{description}, #{address}, #{time}, #{curPeople}, #{maxPeople}, #{price},
+        VALUES (#{userId}, #{title}, #{type}, #{description}, #{address}, #{time}, #{curPeople}, #{maxPeople}, #{price},
                 #{latitude}, #{longitude},
                 #{geohash})
     </insert>
@@ -36,6 +37,9 @@
         <where>
             <if test="type != null">type = #{type}</if>
             <if test="descriptions != null">and (
+                <foreach collection="descriptions" item="desc">
+                    title like concat('%', #{desc}, '%') or
+                </foreach>
                 <foreach collection="descriptions" item="desc">
                     description like concat('%', #{desc}, '%') or
                 </foreach>

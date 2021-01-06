@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Setter
 public class AddShareBillPOJO {
   private BillType type;
+  private String title;
   private String description;
   private String address;
   private Timestamp time;

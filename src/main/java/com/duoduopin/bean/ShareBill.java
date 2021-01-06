@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 public class ShareBill {
   protected long billId;
   protected long userId;
+  protected String title;
   protected BillType type;
   protected String description;
   protected String address;
@@ -30,10 +31,11 @@ public class ShareBill {
   protected double longitude;
   protected double latitude;
   protected String geohash;
-  
+
   public ShareBill(ShareBill shareBill) {
     this.billId = shareBill.billId;
     this.userId = shareBill.userId;
+    this.title = shareBill.title;
     this.type = shareBill.type;
     this.description = shareBill.description;
     this.address = shareBill.address;
@@ -48,6 +50,7 @@ public class ShareBill {
   
   public ShareBill(
     long userId,
+    String title,
     BillType type,
     String description,
     String address,
@@ -59,6 +62,7 @@ public class ShareBill {
     double latitude,
     String geohash) {
     this.userId = userId;
+    this.title = title;
     this.type = type;
     this.description = description;
     this.address = address;
@@ -74,6 +78,7 @@ public class ShareBill {
   public ShareBill(
     long billId,
     long userId,
+    String title,
     BillType type,
     String description,
     String address,
@@ -86,6 +91,7 @@ public class ShareBill {
     String geohash) {
     this.billId = billId;
     this.userId = userId;
+    this.title = title;
     this.type = type;
     this.description = description;
     this.address = address;

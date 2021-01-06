@@ -8,8 +8,6 @@ package com.duoduopin.config;
  */
 public enum BillType {
   ALL,
-  MEAL,
-  CAR,
-  HOUSE,
-  OTHER;
+  BILL,
+  CAR
 }
