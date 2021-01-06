@@ -26,20 +26,22 @@ import java.util.List;
 @Service
 @Slf4j
 public class ShareBillService {
-  @Autowired private ShareBillMapper shareBillMapper;
-  @Autowired private Spatial4jManager spatial4jManager;
-
-  public void createShareBill(
-      long userId,
-      BillType type,
-      String description,
-      String address,
-      Timestamp time,
-      int curPeople,
-      int maxPeople,
-      BigDecimal price,
-      double longitude,
-      double latitude) {
+  @Autowired
+  private ShareBillMapper shareBillMapper;
+  @Autowired
+  private Spatial4jManager spatial4jManager;
+  
+  public Long createShareBill(
+    long userId,
+    BillType type,
+    String description,
+    String address,
+    Timestamp time,
+    int curPeople,
+    int maxPeople,
+    BigDecimal price,
+    double longitude,
+    double latitude) {
     String geohash = spatial4jManager.getGeohash(longitude, latitude);
     ShareBill shareBill =
       new ShareBill(
@@ -59,12 +61,13 @@ public class ShareBillService {
       "A new sharebill is created by "
         + userId
         + ", exec in ShareBillService.createShareBill().");
+    return shareBillMapper.getLastInsertId();
   }
-  
+
   public ShareBill getShareBillByBillId(long billId) {
     return shareBillMapper.getShareBillByBillId(billId);
   }
-  
+
   public List<ShareBill> getShareBillsByUserId(long userId) {
     return shareBillMapper.getShareBillsByUserId(userId);
   }
@@ -97,15 +100,17 @@ public class ShareBillService {
             info.getLongitude(),
             info.getLatitude())));
     }
-    if (info.getDistance() != null) info.getDistance().distanceFilter(shareBillWithDistances);
-    log.info("Sharebills are filtered, exec in ShareBillService.getShareBillBySearchInfo()");
+    if (info.getDistance() != null) {
+      info.getDistance().distanceFilter(shareBillWithDistances);
+      log.info("Sharebills are filtered, exec in ShareBillService.getShareBillBySearchInfo()");
+    }
     return shareBillWithDistances;
   }
 
   public boolean deleteShareBill(long billId, long userId) {
     if (Arrays.binarySearch(Constants.ADMIN_ID, userId) < 0
       && shareBillMapper.getUserIdByBillId(billId) != userId) {
-      log.info(
+      log.warn(
         "An unauthorized delete is done by "
           + userId
           + ", exec in ShareBillService.deleteShareBill().");

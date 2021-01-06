@@ -6,16 +6,18 @@ spring:
     username: root
     password: zzhswdmz
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 3
+      maximum-pool-size: 10
+      max-lifetime: 30000
+      connection-test-query: SELECT 1
+    tomcat:
+      test-on-borrow: true
   redis:
     host: 123.57.12.189
     port: 6379
     password: redisz217
     timeout: 60s
-    lettuce:
-      pool:
-        max-idle: 30
-        max-active: 8
-        min-idle: 10
   mvc:
     hiddenmethod:
       filter:

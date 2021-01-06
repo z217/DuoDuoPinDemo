@@ -52,4 +52,7 @@
             </if>
         </where>
     </select>
+    <select id="getLastInsertId" resultType="java.lang.Long">
+        select LAST_INSERT_ID()
+    </select>
 </mapper>

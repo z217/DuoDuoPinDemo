@@ -30,15 +30,17 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     //    忽略非映射方法
     if (!(handler instanceof HandlerMethod)) return true;
     Method method = ((HandlerMethod) handler).getMethod();
-    //    从header中得到token
-    TokenModel tokenModel = manager.getToken(request.getHeader(Constants.AUTHORIZATION));
-    if (manager.checkToken(tokenModel)) {
-      request.setAttribute(Constants.CURRENT_USER_ID, tokenModel.getId());
-      return true;
-    } else if (method.getAnnotation(Authorization.class) != null) {
-      //      验证token失败，并且方法标注了@Authrization，返回401
-      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      return false;
+    if (method.getAnnotation(Authorization.class) != null) {
+      //    从header中得到token
+      TokenModel tokenModel = manager.getToken(request.getHeader(Constants.AUTHORIZATION));
+      if (manager.checkToken(tokenModel)) {
+        request.setAttribute(Constants.CURRENT_USER_ID, tokenModel.getId());
+        return true;
+      } else {
+        //      验证token失败，并且方法标注了@Authrization，返回401
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return false;
+      }
     }
     return true;
   }

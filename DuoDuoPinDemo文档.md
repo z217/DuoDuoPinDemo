@@ -1,14 +1,14 @@
 # 多多拼项目
 
-请求地址并非固定，以后可能会更改
+请求地址并非固定，以后可能会更改  
+未标注 $content-type$ 默认为 $application/json$
 
 ## 1. 登录
 
-登录使用的是仿`JWT`方式。在成功登录后会返回 $id$ 和 $token$ 。在之后进行需要登录才能使用的功能时，要将`HTTP`请求的 $authorization$ 头内容设置为 $\{id\}\_\{token\}$ 的格式。不确定以后会不会更改，先凑合着用。
+登录使用的是仿`JWT`方式。在成功登录后会返回 $id$ 和 $token$ 。在之后进行需要登录才能使用的功能时，要将`HTTP`请求的 $token$ 头内容设置为 $\{id\}\_\{token\}$ 的格式。不确定以后会不会更改，先凑合着用。
 
 ### 1.1 注册
 
-$content-type: multipart/form-data$  
 参数：  
 $username$ : 用户名  
 $nickname$ : 昵称  
@@ -22,7 +22,6 @@ http://123.57.12.189:8080/User/register
 
 ### 1.2 登录
 
-$content-type: multipart/form-data$  
 参数：  
 $username$ : 用户名  
 $password$ : 密码  
@@ -39,7 +38,7 @@ $token$ : 令牌，有效期为 $72$ 小时
 
 ### 1.3 登出
 
-$authorization$ : [用户 $id$] + "_" + $token$  
+$token$ : [用户 $id$] + "_" + $token$  
 
 $DELETE$ 方式发送请求至
 
@@ -55,8 +54,7 @@ http://123.57.12.189:8080/User/logout
 
 ### 2.1 添加拼单
 
-$content-type: multipart/form-data$  
-$authorization$ : [用户 $id$] + "_" + $token$  
+$token$ : [用户 $id$] + "_" + $token$  
 参数：  
 $type$ : [$MEAL$, $CAR$, $HOUSE$, $OTHER$]，分别对应拼餐、拼车、拼房、其他  
 $description$ : 描述  
@@ -97,8 +95,7 @@ http://123.57.12.189:8080/ShareBill/user/{id}
 使用用户 $id$ 代替路径上的 $\{id\}$ 即可
 
 #### 2.2.3 按其他信息查找
-
-$content-type: multipart/form-data$  
+ 
 参数：  
 $type$ : 类型，同上  
 $description$ : 关键词，多个关键词之间使用空格隔开  

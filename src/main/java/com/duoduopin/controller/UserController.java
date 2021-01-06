@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
  * @see com.duoduopin.dao.UserMapper
  * @see com.duoduopin.manager.TokenManager
  */
-@CrossOrigin("*")
 @RestController
 @RequestMapping(value = "User", produces = "application/json;charset=UTF-8")
 public class UserController {

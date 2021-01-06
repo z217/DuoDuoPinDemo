@@ -45,5 +45,6 @@ public class UserService {
 
   public void userLogout(User user) {
     tokenManager.deleteToken(user.getUserId());
+    log.info(user.getUsername() + " logout");
   }
 }

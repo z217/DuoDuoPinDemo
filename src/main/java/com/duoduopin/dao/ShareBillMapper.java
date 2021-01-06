@@ -24,6 +24,8 @@ public interface ShareBillMapper {
   
   public Long getUserIdByBillId(Long billId);
   
+  public Long getLastInsertId();
+  
   public List<ShareBill> getShareBillsBySearchInfo(
     @Param("type") BillType type,
     @Param("descriptions") String[] descriptions,
