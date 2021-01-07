@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  * ShareBill服务层
  *
  * @author z217
- * @date 2020/08/14
+ * @date 2021/01/07
  */
 @Service
 @Slf4j
@@ -64,15 +65,18 @@ public class ShareBillService {
         + ", exec in ShareBillService.createShareBill().");
     return shareBillMapper.getLastInsertId();
   }
-
-  public ShareBill getShareBillByBillId(long billId) {
-    return shareBillMapper.getShareBillByBillId(billId);
+  
+  public List<ShareBill> getShareBillByBillId(long billId) {
+    List<ShareBill> shareBills = new ArrayList<>();
+    ShareBill bill = shareBillMapper.getShareBillByBillId(billId);
+    if (bill != null) shareBills.add(bill);
+    return shareBills;
   }
-
+  
   public List<ShareBill> getShareBillsByUserId(long userId) {
     return shareBillMapper.getShareBillsByUserId(userId);
   }
-
+  
   public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchPOJO info) {
     if (info.getDistance() != null && info.getLongitude() != null && info.getLatitude() != null)
       info.getDistance().setGeohashs(info.getLongitude(), info.getLatitude(), info.getGeohashs());

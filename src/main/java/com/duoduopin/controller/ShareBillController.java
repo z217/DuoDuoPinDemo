@@ -23,7 +23,7 @@ import java.util.List;
  * 拼单控制器
  *
  * @author z217
- * @date 2020/08/14
+ * @date 2021/01/07
  * @see com.duoduopin.service.ShareBillService
  */
 @Slf4j
@@ -37,6 +37,13 @@ public class ShareBillController {
   @PutMapping("/add")
   public ResponseEntity<ResultModel> addShareBill(
     @CurrentUser User user, @RequestBody AddShareBillPOJO shareBill) {
+    if (shareBill.getMaxPeople() <= 1) {
+      log.warn(
+        user.getUsername()
+          + " try to add an illegal sharebill, exec in ShareBillController.addShareBill().");
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.BILL_ILLEGAL), HttpStatus.BAD_REQUEST);
+    }
     log.info(String.valueOf(shareBill));
     IdCarrier carrier = new IdCarrier();
     carrier.setId(
@@ -54,14 +61,11 @@ public class ShareBillController {
         shareBill.getLatitude()));
     return new ResponseEntity<>(ResultModel.ok(carrier), HttpStatus.OK);
   }
-  
+
   @PostMapping("/{id}")
   public ResponseEntity<ResultModel> getShareBill(@PathVariable("id") long billId) {
-    ShareBill shareBill = shareBillService.getShareBillByBillId(billId);
-    if (shareBill == null)
-      return new ResponseEntity<>(
-        ResultModel.error(ResultStatus.BILL_NOT_FOUND), HttpStatus.NOT_FOUND);
-    return new ResponseEntity<>(ResultModel.ok(shareBill), HttpStatus.OK);
+    List<ShareBill> shareBills = shareBillService.getShareBillByBillId(billId);
+    return new ResponseEntity<>(ResultModel.ok(shareBills), HttpStatus.OK);
   }
   
   @PostMapping("/info")

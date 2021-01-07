@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
  * 用户服务层
  *
  * @author z217
- * @date 2020/08/16
+ * @date 2021/01/06
  */
 @Service
 @Slf4j
@@ -39,16 +39,16 @@ public class UserService {
       log.info(username + " login failed, exec in UserService.userLogin().");
       return null;
     }
-    TokenModel token = tokenManager.createToken(user.getUserId());
+    TokenModel token = tokenManager.createToken(user);
     log.info(username + " login success, token is created, exec in UserService.userLogin().");
     return token;
   }
-  
+
   public void userLogout(User user) {
     tokenManager.deleteToken(user.getUserId());
     log.info(user.getUsername() + " logout");
   }
-  
+
   public boolean deleteUser(User user, long userId) {
     if (!Constants.checkIfAdmin(user.getUserId())) {
       log.warn(

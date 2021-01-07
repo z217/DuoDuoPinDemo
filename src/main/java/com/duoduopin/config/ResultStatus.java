@@ -4,17 +4,18 @@ package com.duoduopin.config;
  * 结果状态
  *
  * @author z217
- * @date 2020/08/07
+ * @date 2021/01/07
  */
 public enum ResultStatus {
   SUCCESS(100, "success"),
-  USERNAME_OR_PASSWORD_ERROR(-1001, "username or password error"),
-  USER_NOT_FOUND(-1002, "user not found"),
-  USER_NOT_LOGIN(-1003, "user not login"),
-  USERNAME_EXIST(-1004, "username already exists"),
-  BILL_NOT_FOUND(-1005, "share bill not found"),
-  UNAUTHORITY(-1006, "Insufficient authority"),
-  UNKOWN(-1007, "unknown problem");
+  UNKOWN(-1000, "unknown problem"),
+  USERNAME_OR_PASSWORD_ERROR(-1001, "Username or password error"),
+  USER_NOT_FOUND(-1002, "User not found"),
+  USER_NOT_LOGIN(-1003, "User not login"),
+  USERNAME_EXIST(-1004, "Username already exists"),
+  UNAUTHORITY(-1005, "Insufficient authority"),
+  BILL_NOT_FOUND(-1006, "Share bill not found"),
+  BILL_ILLEGAL(-1007, "Share bill illegal");
   private int code;
   private String message;
   

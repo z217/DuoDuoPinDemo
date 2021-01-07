@@ -1,15 +1,16 @@
 package com.duoduopin.manager;
 
+import com.duoduopin.bean.User;
 import com.duoduopin.model.TokenModel;
 
 public interface TokenManager {
   /**
    * 创建一个token,关联指定用户
    *
-   * @param id 用户id
+   * @param user 用户
    * @return token
    */
-  public TokenModel createToken(long id);
+  public TokenModel createToken(User user);
 
   /**
    * 检查token有效性

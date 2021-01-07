@@ -6,7 +6,7 @@ import com.duoduopin.bean.User;
  * 用户映射类
  *
  * @author z217
- * @date 2020/08/03
+ * @date 2021/01/06
  */
 public interface UserMapper {
   User getUserById(long userId);

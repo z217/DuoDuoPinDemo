@@ -1,5 +1,6 @@
 package com.duoduopin.manager.impl;
 
+import com.duoduopin.bean.User;
 import com.duoduopin.config.Constants;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisTokenManagerImpl implements TokenManager {
   private RedisTemplate<Long, String> redisTemplate;
-  
+
   @Autowired
   public void setRedisTemplate(RedisTemplate redisTemplate) {
     this.redisTemplate = redisTemplate;
@@ -23,11 +24,13 @@ public class RedisTokenManagerImpl implements TokenManager {
   }
   
   @Override
-  public TokenModel createToken(long id) {
+  public TokenModel createToken(User user) {
     String token = UUID.randomUUID().toString().replace("-", "");
-    TokenModel tokenModel = new TokenModel(id, token);
+    TokenModel tokenModel = new TokenModel(user, token);
     //    存储在redis中并设置时限
-    redisTemplate.boundValueOps(id).set(token, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+    redisTemplate
+      .boundValueOps(user.getUserId())
+      .set(token, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
     return tokenModel;
   }
 
@@ -37,7 +40,9 @@ public class RedisTokenManagerImpl implements TokenManager {
     String token = redisTemplate.boundValueOps(tokenModel.getId()).get();
     if (token != null && token.equals(tokenModel.getToken())) {
       //      在进行过一次有效验证之后刷新时限
-      redisTemplate.boundValueOps(tokenModel.getId()).expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+      redisTemplate
+        .boundValueOps(tokenModel.getId())
+        .expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
       return true;
     }
     return false;
@@ -50,7 +55,7 @@ public class RedisTokenManagerImpl implements TokenManager {
     if (params.length != 2) return null;
     long id = Long.parseLong(params[0]);
     String token = params[1];
-    return new TokenModel(id, token);
+    return new TokenModel(id, token, null, null);
   }
 
   @Override

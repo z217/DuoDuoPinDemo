@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * 用户控制器
  *
  * @author z217
- * @date 2020/08/03
+ * @date 2021/01/06
  * @see com.duoduopin.dao.UserMapper
  * @see com.duoduopin.manager.TokenManager
  */

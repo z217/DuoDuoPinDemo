@@ -1,3 +1,5 @@
+# author: z217
+# date: 2021/01/06
 spring:
   application:
     name: duo-duo-pin-demo
@@ -8,11 +10,26 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 3
-      maximum-pool-size: 10
-      max-lifetime: 30000
+      maximum-pool-size: 15
+      #      连接生命时长
+      max-lifetime: 1800000
       connection-test-query: SELECT 1
+      #      连接idle状态最大时长
+      idle-timeout: 600000
+      #      等待连接池分配时长
+      connection-timeout: 30000
     tomcat:
+      validation-query: SELECT 1
       test-on-borrow: true
+      #      打印超时连接错误
+      log-abandoned: true
+      #      移除超时连接
+      remove-abandoned: true
+      remove-abandoned-timeout: 300
+      #      每5分钟检测空闲10分钟的连接
+      min-evictable-idle-time-millis: 600000
+      time-between-eviction-runs-millis: 300000
+      test-while-idle: true
   redis:
     host: 123.57.12.189
     port: 6379
