@@ -1,7 +1,28 @@
 # 多多拼项目
 
 请求地址并非固定，以后可能会更改  
-未标注 $content-type$ 默认为 $application/json$
+未标注 $content-type$ 默认为 $application/json$  
+返回`json`对象，包含三个属性：
+
+- $code$ ：状态码
+- $message$ ：状态码对应的消息
+- $content$ ：内容，如果请求没有出错的结果会以对象形式存放在这里
+
+其中状态码与对应消息列表如下：
+
+| 状态码  |                消息                |       描述       |
+| :-----: | :--------------------------------: | :--------------: |
+|  $100$  |             $success$              |     请求成功     |
+| $-1000$ |        $unknown\ \ problem$        |     未知问题     |
+| $-1001$ | $Username\ \ or\ \ password error$ | 用户名或密码错误 |
+| $-1002$ |       $User\ \ not\ \ found$       |    用户未找到    |
+| $-1003$ |       $User\ \ not\ \ login$       |    用户未登录    |
+| $-1004$ |  $Username\ \ already\ \ exists$   |   用户名已存在   |
+| $-1005$ |    $Insufficient\ \ authority$     |     权限不足     |
+| $-1006$ |  $Share\ \ bill\ \ not\ \ found$   |    未找到拼单    |
+| $-1007$ |     $Share\ \ bill\ \ illegal$     |     非法拼单     |
+| $-1008$ |      $Join\ \ team\ \ failed$      |   加入小组失败   |
+| $-1009$ |    $Join\ \ team\ \ duplicated$    |   重复加入小组   |
 
 ## 1. 登录
 
@@ -33,7 +54,8 @@ http://123.57.12.189:8080/User/login
 ```
 
 返回结果：  
-$id$ : 用户 $id$  
+$userId$ : 用户 $userId$  
+$nickname$ ：用户昵称  
 $token$ : 令牌，有效期为 $72$ 小时
 
 ### 1.3 登出
@@ -59,6 +81,20 @@ http://123.57.12.189:8080/User/delete/{id}
 将路径上的 $\{id\}$ 替换为待删除的用户 $id$ 即可  
 要求管理员进行该操作
 
+### 1.5 查找用户
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/User/{id}
+```
+
+返回结果：  
+$userId$ ：用户 $userId$  
+$username$ ：用户名  
+$nickname$ ：昵称  
+$password$ ：为空，可以忽略  
+
 ## 2. 拼单
 
 以后可能会添加分页。按序排列在分页之后实现。
@@ -72,7 +108,6 @@ $title$ : 标题
 $description$ : 描述  
 $address$ : 详细地址  
 $time$ : 时间，以 $yyyy-MM-ddThh:mm:ss$ 格式发送（秒数可以统一设置为 $00$）  
-$curPeople$ : 当前人数（默认为 $1$）  
 $maxPeople$ : 最大人数  
 $price$ : 预计价格  
 $longitude$ : 经度（通过地图 $API$ 获取，尽量精确）  
@@ -96,6 +131,22 @@ http://123.57.12.189:8080/ShareBill/{id}
 
 使用拼单 $id$ 代替路径上的 $\{id\}$ 即可
 
+返回结果：  
+$billId$ ：拼单 $id$  
+$userId$ ：创建者用户 $id$  
+$nickname$ ：创建者昵称  
+$title$ ：标题  
+$type$ ：类型  
+$description$ ：描述  
+$address$ ：地址  
+$time$ ：时间  
+$curPeople$ ：当前人数  
+$maxPeople$ ：最大人数  
+$price$ ：价格  
+$longitude$ ：经度  
+$latitude$ ：纬度  
+$geohash$ ：$geohash$ 值  
+
 #### 2.2.2 按用户`id`查找
 
 $POST$ 方式发送至
@@ -106,8 +157,10 @@ http://123.57.12.189:8080/ShareBill/user/{id}
 
 使用用户 $id$ 代替路径上的 $\{id\}$ 即可
 
+返回结果同上
+
 #### 2.2.3 按其他信息查找
- 
+
 参数：  
 $type$ : 类型，同上。可以选择 $ALL$ 代表全部类型。  
 $description$ : 关键词，多个关键词之间使用空格隔开  
@@ -125,6 +178,10 @@ $POST$ 方式发送至
 http://123.57.12.189:8080/ShareBill/info
 ```
 
+返回结果比之前新增一项：
+
+$distance$ ：距离，单位千米
+
 ### 2.3 删除拼单
 
 $DELETE$ 方式发送至
@@ -135,3 +192,47 @@ http://123.57.12.189:8080/ShareBill/del/{id}
 
 使用拼单 $id$ 代替路径上的 $\{id\}$ 即可  
 非管理员账户只能删除自己的拼单
+
+### 2.4 加入
+
+$PUT$ 方式发送至
+
+```url
+http://123.57.12.189:8080/ShareBill/join/{id}
+```
+
+使用拼单 $id$ 代替路径上的 $\{id\} 即可  
+
+### 2.5 退出
+
+$DELETE$ 方式发送至
+
+```url
+http://123.57.12.189:8080/ShareBill/quit/{bill_id}/{user_id}
+```
+
+## 3. 聊天
+
+### 3.1 `WebSocket`
+
+```url
+ws://123.57.12.189:8080/ws/{bill_id}
+```
+
+### 3.2 查询小组聊天记录
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/chat/{id}
+```
+
+使用拼单 $id$ 替换路径上的 $id$ 即可
+
+### 3.3 查询用户聊天记录
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/chat/{bill_id}/{user_id}
+```

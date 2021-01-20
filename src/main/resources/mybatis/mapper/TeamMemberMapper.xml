@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duoduopin.dao.TeamMemberMapper">
+    <insert id="joinTeam">
+        insert into team_member (bill_id, user_id) value (#{billId}, #{userId})
+    </insert>
+
+    <delete id="quitTeam">
+        delete
+        from team_member
+        where bill_id = #{billId}
+          and user_id = #{userId}
+    </delete>
+
+    <select id="getTeamMemberByBillId" resultType="com.duoduopin.bean.TeamMember">
+        select *
+        from team_member
+        where bill_id = #{billId}
+    </select>
+
+    <select id="getTeamByUserId" resultType="com.duoduopin.bean.TeamMember">
+        select *
+        from team_member
+        where user_id = #{userId}
+    </select>
+</mapper>

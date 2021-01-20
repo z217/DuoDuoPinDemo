@@ -28,10 +28,21 @@ public class UserController {
   @Autowired
   private UserService userService;
   
+  @PostMapping("/{id}")
+  public ResponseEntity<ResultModel> getUserById(@PathVariable("id") long userId) {
+    User user = userService.getUserById(userId);
+    if (user == null)
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.USER_NOT_FOUND), HttpStatus.NOT_FOUND);
+    user.setPassword("");
+    return new ResponseEntity<>(ResultModel.ok(user), HttpStatus.OK);
+  }
+  
   @PutMapping("/register")
   public ResponseEntity<ResultModel> register(@RequestBody RegisterPOJO registerPOJO) {
-    if (!userService.createUser(
-      registerPOJO.getUsername(), registerPOJO.getNickname(), registerPOJO.getPassword()))
+    Long userId = userService.createUser(
+      registerPOJO.getUsername(), registerPOJO.getNickname(), registerPOJO.getPassword());
+    if (userId == null)
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.USERNAME_EXIST), HttpStatus.NOT_ACCEPTABLE);
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
@@ -45,7 +56,7 @@ public class UserController {
         ResultModel.error(ResultStatus.USERNAME_OR_PASSWORD_ERROR), HttpStatus.NOT_FOUND);
     return new ResponseEntity<>(ResultModel.ok(token), HttpStatus.OK);
   }
-  
+
   @DeleteMapping("/logout")
   @Authorization
   public ResponseEntity<ResultModel> logout(@CurrentUser User user) {
@@ -58,7 +69,8 @@ public class UserController {
   public ResponseEntity<ResultModel> deleteUser(
     @CurrentUser User user, @PathVariable("id") long userId) {
     if (!userService.deleteUser(user, userId)) {
-      return new ResponseEntity<>(ResultModel.error(ResultStatus.UNAUTHORITY), HttpStatus.UNAUTHORIZED);
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
     }
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }

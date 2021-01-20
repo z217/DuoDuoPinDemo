@@ -13,24 +13,30 @@ import org.springframework.stereotype.Service;
  * 用户服务层
  *
  * @author z217
- * @date 2021/01/06
+ * @date 2021/01/07
  */
 @Service
 @Slf4j
 public class UserService {
-  @Autowired private UserMapper userMapper;
-  @Autowired private TokenManager tokenManager;
-
-  public boolean createUser(String username, String nickname, String password) {
+  @Autowired
+  private UserMapper userMapper;
+  @Autowired
+  private TokenManager tokenManager;
+  
+  public User getUserById(long userId) {
+    return userMapper.getUserById(userId);
+  }
+  
+  public Long createUser(String username, String nickname, String password) {
     log.info("User create begin, exec in UserService.createUser().");
     if (userMapper.getUserByUsername(username) != null) {
       log.info(username + "already exists, exec in UserService.createUser().");
-      return false;
+      return null;
     }
     User user = new User(username, nickname, password);
     userMapper.insertUser(user);
     log.info("User:" + username + " create completed, exec in UserService.createUser().");
-    return true;
+    return user.getUserId();
   }
 
   public TokenModel userLogin(String username, String password) {

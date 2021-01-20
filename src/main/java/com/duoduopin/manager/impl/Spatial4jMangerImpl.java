@@ -25,6 +25,6 @@ public class Spatial4jMangerImpl implements Spatial4jManager {
   @Override
   public double getDistance(double lon1, double lat1, double lon2, double lat2) {
     return geo.calcDistance(geo.makePoint(lon1, lat1), geo.makePoint(lon2, lat2))
-        * DistanceUtils.DEG_TO_KM;
+      * DistanceUtils.DEG_TO_KM;
   }
 }

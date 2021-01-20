@@ -14,7 +14,10 @@
     <select id="getUserByUsername" resultType="com.duoduopin.bean.User">
         select * from user where username = #{username}
     </select>
-    <insert id="insertUser">
+    <select id="getNickNameByUserId" resultType="java.lang.String">
+        select nickname from user where user_id = #{userId}
+    </select>
+    <insert id="insertUser" parameterType="com.duoduopin.bean.User" useGeneratedKeys="true" keyProperty="userId">
         insert into user(username, nickname, password) values(#{username}, #{nickname}, #{password})
     </insert>
 </mapper>

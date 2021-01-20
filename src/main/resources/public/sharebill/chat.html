@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Duo Duo Pin Demo</title>
+  <script src="../script/http_code.jquery.com_jquery-3.5.1.js"></script>
+  <script src="../script/httprequest.js"></script>
+</head>
+<body>
+<script>
+  function sendMessage() {
+    let content = $('#chat-send-form > label:nth-child(1) > input');
+    if (content === "") return;
+    let message = {
+      'userId': sessionStorage.getItem('userId'),
+      'billId': sessionStorage.getItem('billId'),
+      'nickname': sessionStorage.getItem('nickname'),
+      'type': 'CHAT',
+      'time': new Date(),
+      'content': content.val()
+    };
+    content.val("");
+    websocket.send(JSON.stringify(message));
+  }
+
+  function quit() {
+    sendJSON('DELETE', baseUrl + '/ShareBill/quit/' + sessionStorage.getItem('billId') + '/' + sessionStorage.getItem('userId'), true, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
+    window.location.href = "search.html";
+  }
+</script>
+<h1>聊天室</h1>
+<form id="chat-send-form">
+  <label><input name="message" type="text" value=""/></label>
+  <label><input onclick="sendMessage()" type="button" value="发送"/></label>
+  <label><input onclick="quit()" type="button" value="退出小组"/></label>
+</form>
+<div id="chat-message">
+  <table>
+    <tr>
+      <td>用户</td>
+      <td>时间</td>
+      <td>发言</td>
+    </tr>
+  </table>
+</div>
+<script>
+  let table = $('#chat-message > table');
+  let chatMessages = sendJSON('POST', baseUrl + 'chat/' + sessionStorage.getItem('billId'), false, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token')).content;
+  for (let i in chatMessages) {
+    table.html(table.html() + '<tr><td>' + chatMessages[i].nickname + '</td><td>' + chatMessages[i].time + '</td><td>' + chatMessages[i].content + '</td></tr>');
+  }
+
+  let websocket = null;
+  if ('WebSocket' in window) websocket = new WebSocket('ws://localhost:8080/ws/' + sessionStorage.getItem('billId'));
+  else alert('WebSocket is not supported in this explorer, please use latest explorer');
+
+  websocket.onerror = function () {
+    alert('WebSocket创建错误');
+  }
+  websocket.onopen = function (event) {
+  }
+  websocket.onmessage = function (event) {
+    let chatMessage = JSON.parse(event.data);
+    table.html(table.html() + '<tr><td>' + chatMessage.nickname + '</td><td>' + new Date(chatMessage.time) + '</td><td>' + chatMessage.content + '</td></tr>');
+  }
+</script>
+</body>
+</html>

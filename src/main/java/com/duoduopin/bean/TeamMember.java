@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Id载体
- *
+ * @description 小组成员
  * @author z217
- * @date 2021/01/06
+ * @date 2021/01/17
  */
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IdCarrier {
-  private long id;
+public class TeamMember {
+  private long billId;
+  private long userId;
 }

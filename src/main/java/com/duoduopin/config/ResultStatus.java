@@ -13,9 +13,11 @@ public enum ResultStatus {
   USER_NOT_FOUND(-1002, "User not found"),
   USER_NOT_LOGIN(-1003, "User not login"),
   USERNAME_EXIST(-1004, "Username already exists"),
-  UNAUTHORITY(-1005, "Insufficient authority"),
+  UNAUTHORIZED(-1005, "Insufficient authority"),
   BILL_NOT_FOUND(-1006, "Share bill not found"),
-  BILL_ILLEGAL(-1007, "Share bill illegal");
+  BILL_ILLEGAL(-1007, "Share bill illegal"),
+  JOIN_FAILED(-1008, "Join team failed"),
+  DUPLICATE_JOIN(-1009, "Join team duplicated");
   private int code;
   private String message;
   

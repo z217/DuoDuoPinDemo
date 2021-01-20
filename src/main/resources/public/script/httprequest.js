@@ -1,4 +1,4 @@
-let baseUrl = 'http://123.57.12.189:8080/'
+let baseUrl = 'http://localhost:8080/'
 
 function sendJSON(method, url, async, data, id, token) {
   let res;

@@ -34,7 +34,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
       //    从header中得到token
       TokenModel tokenModel = manager.getToken(request.getHeader(Constants.AUTHORIZATION));
       if (manager.checkToken(tokenModel)) {
-        request.setAttribute(Constants.CURRENT_USER_ID, tokenModel.getId());
+        request.setAttribute(Constants.CURRENT_USER_ID, tokenModel.getUserId());
         return true;
       } else {
         //      验证token失败，并且方法标注了@Authrization，返回401

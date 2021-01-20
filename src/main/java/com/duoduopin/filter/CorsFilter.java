@@ -31,7 +31,6 @@ public class CorsFilter implements Filter {
     httpResponse.setHeader("Access-Control-Max-Age", "3600");
     // 表明它允许跨域请求包含xxx头
     httpResponse.setHeader("Access-Control-Allow-Headers", "*");
-    log.info("Already add access allow header");
     filterChain.doFilter(servletRequest, servletResponse);
   }
 }

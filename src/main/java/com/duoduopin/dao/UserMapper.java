@@ -13,7 +13,9 @@ public interface UserMapper {
   
   User getUserByUsername(String username);
   
-  void insertUser(User user);
+  String getNickNameByUserId(long userId);
+  
+  int insertUser(User user);
   
   void deleteUser(long userId);
 }

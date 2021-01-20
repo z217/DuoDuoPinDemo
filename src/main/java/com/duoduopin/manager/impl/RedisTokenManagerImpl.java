@@ -37,11 +37,11 @@ public class RedisTokenManagerImpl implements TokenManager {
   @Override
   public boolean checkToken(TokenModel tokenModel) {
     if (tokenModel == null) return false;
-    String token = redisTemplate.boundValueOps(tokenModel.getId()).get();
+    String token = redisTemplate.boundValueOps(tokenModel.getUserId()).get();
     if (token != null && token.equals(tokenModel.getToken())) {
       //      在进行过一次有效验证之后刷新时限
       redisTemplate
-        .boundValueOps(tokenModel.getId())
+        .boundValueOps(tokenModel.getUserId())
         .expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
       return true;
     }

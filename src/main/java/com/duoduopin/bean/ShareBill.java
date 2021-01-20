@@ -1,9 +1,7 @@
 package com.duoduopin.bean;
 
 import com.duoduopin.config.BillType;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -16,10 +14,13 @@ import java.sql.Timestamp;
  */
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
+@AllArgsConstructor
 public class ShareBill {
   protected long billId;
   protected long userId;
+  protected String nickname;
   protected String title;
   protected BillType type;
   protected String description;
@@ -35,6 +36,7 @@ public class ShareBill {
   public ShareBill(ShareBill shareBill) {
     this.billId = shareBill.billId;
     this.userId = shareBill.userId;
+    this.nickname = shareBill.nickname;
     this.title = shareBill.title;
     this.type = shareBill.type;
     this.description = shareBill.description;
@@ -70,35 +72,6 @@ public class ShareBill {
     this.price = price;
     this.curPeople = curPeople;
     this.maxPeople = maxPeople;
-    this.longitude = longitude;
-    this.latitude = latitude;
-    this.geohash = geohash;
-  }
-  
-  public ShareBill(
-    long billId,
-    long userId,
-    String title,
-    BillType type,
-    String description,
-    String address,
-    Timestamp time,
-    int curPeople,
-    int maxPeople,
-    BigDecimal price,
-    double longitude,
-    double latitude,
-    String geohash) {
-    this.billId = billId;
-    this.userId = userId;
-    this.title = title;
-    this.type = type;
-    this.description = description;
-    this.address = address;
-    this.time = time;
-    this.curPeople = curPeople;
-    this.maxPeople = maxPeople;
-    this.price = price;
     this.longitude = longitude;
     this.latitude = latitude;
     this.geohash = geohash;

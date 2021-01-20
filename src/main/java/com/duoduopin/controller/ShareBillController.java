@@ -23,7 +23,7 @@ import java.util.List;
  * 拼单控制器
  *
  * @author z217
- * @date 2021/01/07
+ * @date 2021/01/20
  * @see com.duoduopin.service.ShareBillService
  */
 @Slf4j
@@ -46,7 +46,7 @@ public class ShareBillController {
     }
     log.info(String.valueOf(shareBill));
     IdCarrier carrier = new IdCarrier();
-    carrier.setId(
+    Long id =
       shareBillService.createShareBill(
         user.getUserId(),
         shareBill.getTitle(),
@@ -58,7 +58,11 @@ public class ShareBillController {
         shareBill.getMaxPeople(),
         shareBill.getPrice(),
         shareBill.getLongitude(),
-        shareBill.getLatitude()));
+        shareBill.getLatitude());
+    if (id == null)
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.BILL_ILLEGAL), HttpStatus.BAD_REQUEST);
+    carrier.setId(id);
     return new ResponseEntity<>(ResultModel.ok(carrier), HttpStatus.OK);
   }
 
@@ -67,7 +71,7 @@ public class ShareBillController {
     List<ShareBill> shareBills = shareBillService.getShareBillByBillId(billId);
     return new ResponseEntity<>(ResultModel.ok(shareBills), HttpStatus.OK);
   }
-  
+
   @PostMapping("/info")
   public ResponseEntity<ResultModel> getShareBillBySearchInfo(@RequestBody SearchPOJO info) {
     List<ShareBillWithDistance> shareBills = shareBillService.getShareBillBySearchInfo(info);
@@ -81,12 +85,39 @@ public class ShareBillController {
   }
   
   @Authorization
+  @PutMapping("/join/{id}")
+  public ResponseEntity<ResultModel> joinTeamByBillId(
+    @CurrentUser User user, @PathVariable("id") long billId) {
+    if (shareBillService.isTeamMember(user.getUserId(), billId))
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.DUPLICATE_JOIN), HttpStatus.BAD_REQUEST);
+    if (!shareBillService.joinTeam(billId, user)) {
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.JOIN_FAILED), HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
+  }
+  
+  @Authorization
+  @DeleteMapping("/quit/{bill_id}/{user_id}")
+  public ResponseEntity<ResultModel> quitTeam(
+    @CurrentUser User user,
+    @PathVariable("bill_id") long billId,
+    @PathVariable("user_id") long userId) {
+    if (!shareBillService.quitTeam(user, billId, userId)) {
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    }
+    return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
+  }
+  
+  @Authorization
   @DeleteMapping("/del/{id}")
   public ResponseEntity<ResultModel> deleteShareBill(
     @PathVariable("id") long billId, @CurrentUser User user) {
     if (!shareBillService.deleteShareBill(billId, user.getUserId()))
       return new ResponseEntity<>(
-        ResultModel.error(ResultStatus.UNAUTHORITY), HttpStatus.UNAUTHORIZED);
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
 }

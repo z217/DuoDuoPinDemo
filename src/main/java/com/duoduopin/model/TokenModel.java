@@ -16,14 +16,14 @@ import lombok.Setter;
 @Setter
 public class TokenModel {
   //  用户id
-  private long id;
+  private long userId;
   //  随机生成uuid
   private String token;
   private String username;
   private String nickname;
   
   public TokenModel(User user, String token) {
-    this.id = user.getUserId();
+    this.userId = user.getUserId();
     this.token = token;
     this.username = user.getUsername();
     this.nickname = user.getNickname();
