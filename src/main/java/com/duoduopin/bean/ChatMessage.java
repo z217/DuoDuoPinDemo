@@ -1,15 +1,14 @@
 package com.duoduopin.bean;
 
-import com.duoduopin.config.MessageType;
 import lombok.*;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
 /**
- * @description 聊天信息
  * @author z217
- * @date 2021/01/17
+ * @description 聊天信息
+ * @date 2021/01/25
  */
 @Getter
 @Setter
@@ -23,4 +22,10 @@ public class ChatMessage implements Serializable {
   private MessageType type;
   private Timestamp time;
   private String content;
+  
+  public enum MessageType {
+    CHAT,
+    JOIN,
+    QUIT
+  }
 }

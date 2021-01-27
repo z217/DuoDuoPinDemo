@@ -2,15 +2,13 @@ package com.duoduopin.controller;
 
 import com.duoduopin.annotation.Authorization;
 import com.duoduopin.annotation.CurrentUser;
-import com.duoduopin.bean.IdCarrier;
-import com.duoduopin.bean.ShareBill;
-import com.duoduopin.bean.ShareBillWithDistance;
-import com.duoduopin.bean.User;
+import com.duoduopin.bean.*;
 import com.duoduopin.config.ResultStatus;
 import com.duoduopin.model.ResultModel;
 import com.duoduopin.pojo.AddShareBillPOJO;
 import com.duoduopin.pojo.SearchPOJO;
 import com.duoduopin.service.ShareBillService;
+import com.duoduopin.service.SystemMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,15 +21,19 @@ import java.util.List;
  * 拼单控制器
  *
  * @author z217
- * @date 2021/01/20
+ * @date 2021/01/25
  * @see com.duoduopin.service.ShareBillService
+ * @see com.duoduopin.service.SystemMessageService
+ * @see com.duoduopin.controller.SystemMessageWebSocket
  */
 @Slf4j
 @RestController
 @RequestMapping(value = "/ShareBill", produces = "application/json;charset=UTF-8")
 public class ShareBillController {
   @Autowired
-  public ShareBillService shareBillService;
+  private ShareBillService shareBillService;
+  @Autowired
+  private SystemMessageService systemMessageService;
   
   @Authorization
   @PutMapping("/add")
@@ -85,16 +87,66 @@ public class ShareBillController {
   }
   
   @Authorization
-  @PutMapping("/join/{id}")
-  public ResponseEntity<ResultModel> joinTeamByBillId(
-    @CurrentUser User user, @PathVariable("id") long billId) {
-    if (shareBillService.isTeamMember(user.getUserId(), billId))
+  @PostMapping("/apply/{id}/allow")
+  public ResponseEntity<ResultModel> applyAllow(
+    @CurrentUser User user, @PathVariable("id") long systemMessageId) {
+    SystemMessage systemMessage = systemMessageService.getSystemMessageByMessageId(systemMessageId);
+    if (systemMessage.getType() != SystemMessage.MessageType.APPLY)
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.BILL_NOT_FOUND), HttpStatus.BAD_REQUEST);
+    if (systemMessage.getReceiverId() != user.getUserId())
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    List<ShareBill> shareBills = shareBillService.getShareBillByBillId(systemMessage.getBillId());
+    if (shareBills.size() == 0)
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.BILL_NOT_FOUND), HttpStatus.BAD_REQUEST);
+    shareBillService.joinTeam(systemMessage.getBillId(), systemMessage.getSenderId());
+    systemMessageService.createSystemMessage(
+      user.getUserId(),
+      systemMessage.getSenderId(),
+      systemMessage.getBillId(),
+      SystemMessage.MessageType.ALLOW);
+    systemMessageService.deleteSystemMessageByMessageId(systemMessageId);
+    return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
+  }
+  
+  @Authorization
+  @PostMapping("/apply/{id}/reject")
+  public ResponseEntity<ResultModel> applyReject(
+    @CurrentUser User user, @PathVariable("id") long systemMessageId) {
+    SystemMessage systemMessage = systemMessageService.getSystemMessageByMessageId(systemMessageId);
+    if (systemMessage.getType() != SystemMessage.MessageType.APPLY)
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.BILL_NOT_FOUND), HttpStatus.BAD_REQUEST);
+    if (systemMessage.getReceiverId() != user.getUserId())
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    systemMessageService.createSystemMessage(
+      user.getUserId(),
+      systemMessage.getSenderId(),
+      systemMessage.getBillId(),
+      SystemMessage.MessageType.REJEC);
+    systemMessageService.deleteSystemMessageByMessageId(systemMessageId);
+    return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
+  }
+  
+  @Authorization
+  @PutMapping("/join/{bill_id}")
+  public ResponseEntity<ResultModel> joinTeam(
+    @CurrentUser User user, @PathVariable("bill_id") long billId) {
+    if (shareBillService.isTeamMember(user.getUserId(), billId)
+      || systemMessageService.isDuplicateApply(user.getUserId(), billId))
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.DUPLICATE_JOIN), HttpStatus.BAD_REQUEST);
-    if (!shareBillService.joinTeam(billId, user)) {
+    if (!shareBillService.isApplicable(billId))
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.JOIN_FAILED), HttpStatus.BAD_REQUEST);
-    }
+    systemMessageService.createSystemMessage(
+      user.getUserId(),
+      shareBillService.getUserIdByBillId(billId),
+      billId,
+      SystemMessage.MessageType.APPLY);
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
   
@@ -104,10 +156,11 @@ public class ShareBillController {
     @CurrentUser User user,
     @PathVariable("bill_id") long billId,
     @PathVariable("user_id") long userId) {
-    if (!shareBillService.quitTeam(user, billId, userId)) {
+    if (user.getUserId() != userId && !shareBillService.isLeader(billId, user.getUserId())) {
       return new ResponseEntity<>(
         ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
     }
+    shareBillService.quitTeam(user, billId, userId);
     return new ResponseEntity<>(ResultModel.ok(), HttpStatus.OK);
   }
   

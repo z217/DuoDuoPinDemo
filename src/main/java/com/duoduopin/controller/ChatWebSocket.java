@@ -18,25 +18,29 @@ import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description 聊天WebSocket
  * @author z217
+ * @description 聊天WebSocket
  * @date 2021/01/17
  */
 @Controller
 @Slf4j
-@ServerEndpoint(value = "/ws/{id}")
+@ServerEndpoint(value = "/ws/chat/{id}")
 public class ChatWebSocket {
   private static ChatService chatService;
-  private static ConcurrentHashMap<Long, List<ChatWebSocket>> webSocketMap =
-      new ConcurrentHashMap<>();
+  private static ConcurrentHashMap<Long, List<ChatWebSocket>> webSocketMap = null;
+  
+  static {
+    webSocketMap = new ConcurrentHashMap<>();
+  }
+  
   private Session session;
   private long billId;
-
+  
   @Autowired
   public void setChatService(ChatService chatService) {
     ChatWebSocket.chatService = chatService;
   }
-
+  
   @OnOpen
   @Authorization
   public void onOpen(@PathParam(value = "id") long billId, Session session) {
@@ -85,9 +89,10 @@ public class ChatWebSocket {
   private void sendToTeam(ChatMessage chatMessage) {
     List<ChatWebSocket> list = webSocketMap.get(chatMessage.getBillId());
     chatService.createChatMessage(chatMessage);
+    String jsonChatMessage = JSONObject.toJSONString(chatMessage);
     try {
       for (ChatWebSocket controller : list) {
-        if (controller.isOpen()) controller.sendMessage(JSONObject.toJSONString(chatMessage));
+        if (controller.isOpen()) controller.sendMessage(jsonChatMessage);
       }
     } catch (IOException e) {
       log.warn(Arrays.toString(e.getStackTrace()));

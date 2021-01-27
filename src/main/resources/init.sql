@@ -3,15 +3,17 @@ USE DuoDuoPin;
 
 DROP TABLE IF EXISTS `team_member`;
 DROP TABLE IF EXISTS `chat_message`;
+DROP TABLE IF EXISTS `system_message`;
 DROP TABLE IF EXISTS `share_bill`;
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user`
 (
-    `user_id`  INT UNSIGNED AUTO_INCREMENT,
-    `username` VARCHAR(20) UNIQUE NOT NULL,
-    `nickname` VARCHAR(20)        NOT NULL,
-    `password` VARCHAR(20)        NOT NULL,
+    `user_id`     INT UNSIGNED AUTO_INCREMENT,
+    `username`    VARCHAR(20) UNIQUE NOT NULL,
+    `nickname`    VARCHAR(20)        NOT NULL,
+    `password`    VARCHAR(20)        NOT NULL,
+    `last_online` TIMESTAMP          NULL,
     PRIMARY KEY (`user_id`)
 );
 
@@ -61,6 +63,24 @@ CREATE TABLE chat_message
         ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE system_message
+(
+    `message_id`  INT UNSIGNED AUTO_INCREMENT,
+    `sender_id`   INT UNSIGNED NULL,
+    `receiver_id` INT UNSIGNED NULL,
+    `bill_id`     INT UNSIGNED NULL,
+    `type`        CHAR(5)      NOT NULL,
+    `time`        TIMESTAMP    NOT NULL,
+    `content`     VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`message_id`),
+    FOREIGN KEY (`sender_id`) REFERENCES `user` (`user_id`)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`receiver_id`) REFERENCES `user` (`user_id`)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (`bill_id`) REFERENCES `share_bill` (`bill_id`)
+        ON DELETE CASCADE ON UPDATE CASCADE
+)
+
 INSERT INTO `user` (`username`, `nickname`, `password`)
 VALUES ('admin', 'admin', 'password'),
        ('z217', 'z217', '123456');
@@ -72,9 +92,4 @@ VALUES (1, '首都机场T2拼车', 'CAR', '1月1日早上首都机场T2航站楼
         23.00, 32, 20, 'sewcb0vsqn1');
 
 INSERT INTO team_member (`bill_id`, `user_id`)
-VALUES (1, 1),
-       (1, 2);
-
-INSERT INTO chat_message (`user_id`, `bill_id`, `type`, `time`, `content`)
-VALUES (2, 1, 'JOIN', '2021-01-01 17:00:00', 'z217加入了小组'),
-       (1, 1, 'CHAT', '2021-01-01 17:00:00', '欢迎');
+VALUES (1, 1);

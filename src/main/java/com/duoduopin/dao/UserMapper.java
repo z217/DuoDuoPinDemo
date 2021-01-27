@@ -2,6 +2,8 @@ package com.duoduopin.dao;
 
 import com.duoduopin.bean.User;
 
+import java.sql.Timestamp;
+
 /**
  * 用户映射类
  *
@@ -14,6 +16,10 @@ public interface UserMapper {
   User getUserByUsername(String username);
   
   String getNickNameByUserId(long userId);
+  
+  Timestamp getLastOnlineByUesrId(long userId);
+  
+  int updateLastOnlineByUserId(long userId);
   
   int insertUser(User user);
   

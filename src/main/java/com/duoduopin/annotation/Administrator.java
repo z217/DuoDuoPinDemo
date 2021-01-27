@@ -6,12 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 在Controller的方法上使用此注解，该方法在映射时会检查用户是否登录，未登录返回401错误
- *
- * @author ScienJus
- * @date 2015/07/31.
- * @see com.duoduopin.interceptor.AuthorizationInterceptor
+ * @description 在Controller方法上使用该注解，检查是否为管理员
+ * @author z217
+ * @date 2021/01/25
+ * @see com.duoduopin.interceptor.AdministratorInterceptor
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Authorization {}
+public @interface Administrator {}

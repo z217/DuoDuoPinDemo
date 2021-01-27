@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @description 聊天控制器
  * @author z217
- * @date 2021/01/18
+ * @description 聊天控制器
+ * @date 2021/01/26
  * @see com.duoduopin.service.ChatService
  * @see com.duoduopin.service.ShareBillService
  */
@@ -41,18 +41,31 @@ public class ChatController {
     return new ResponseEntity<>(
         ResultModel.ok(chatService.getChatMessageByBillId(billId)), HttpStatus.OK);
   }
-
+  
   @Authorization
   @PostMapping("/{billId}/{userId}")
   public ResponseEntity<ResultModel> getChatMessageByUserId(
-      @CurrentUser User user,
-      @PathVariable("billId") long billId,
-      @PathVariable("userId") long userId) {
+    @CurrentUser User user,
+    @PathVariable("billId") long billId,
+    @PathVariable("userId") long userId) {
     if (!shareBillService.isTeamMember(user.getUserId(), billId)) {
       return new ResponseEntity<>(
-          ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
     }
     return new ResponseEntity<>(
-        ResultModel.ok(chatService.getChatMessageByBillIdAndUserId(billId, userId)), HttpStatus.OK);
+      ResultModel.ok(chatService.getChatMessageByBillIdAndUserId(billId, userId)), HttpStatus.OK);
+  }
+  
+  @Authorization
+  @PostMapping("/{billId}/unchecked")
+  public ResponseEntity<ResultModel> getUncheckedChatMessage(
+    @CurrentUser User user, @PathVariable("billId") long billId) {
+    if (!shareBillService.isTeamMember(user.getUserId(), billId)) {
+      return new ResponseEntity<>(
+        ResultModel.error(ResultStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    }
+    return new ResponseEntity<>(
+      ResultModel.ok(chatService.getUncheckedChatMessage(billId, user.getUserId())),
+      HttpStatus.OK);
   }
 }

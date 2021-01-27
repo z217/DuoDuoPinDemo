@@ -9,13 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * @description 聊天服务层
  * @author z217
- * @date 2021/01/20
+ * @description 聊天服务层
+ * @date 2021/01/26
  * @see com.duoduopin.dao.ChatMessageMapper
  * @see com.duoduopin.dao.TeamMemberMapper
  * @see com.duoduopin.dao.UserMapper
@@ -42,9 +43,9 @@ public class ChatService {
     List<ChatMessage> messages = chatMessageMapper.getChatMessageByBillId(billId);
     HashMap<Long, String> memberNickname = getTeamMemberNickname(billId);
     for (ChatMessage message : messages) {
-      if (memberNickname.get(message.getUserId()) == null)
-        message.setNickname(userMapper.getNickNameByUserId(message.getUserId()));
-      else message.setNickname(memberNickname.get(message.getUserId()));
+      message.setNickname(
+        memberNickname.getOrDefault(
+          message.getUserId(), userMapper.getNickNameByUserId(message.getUserId())));
     }
     return messages;
   }
@@ -55,14 +56,28 @@ public class ChatService {
     for (ChatMessage message : messages) message.setNickname(nickname);
     return messages;
   }
-
+  
   public List<ChatMessage> getChatMessageByBillIdAndUserId(long billId, long userId) {
     List<ChatMessage> messages = chatMessageMapper.getChatMessageByBillIdAndUserId(billId, userId);
     String nickname = userMapper.getNickNameByUserId(userId);
     for (ChatMessage message : messages) message.setNickname(nickname);
     return messages;
   }
-
+  
+  public List<ChatMessage> getUncheckedChatMessage(long billId, long userId) {
+    Timestamp lastOnline = userMapper.getLastOnlineByUesrId(userId);
+    userMapper.updateLastOnlineByUserId(userId);
+    List<ChatMessage> chatMessages =
+      chatMessageMapper.getChatMessageByBillIdAndLastOnline(billId, lastOnline);
+    HashMap<Long, String> memberNickname = getTeamMemberNickname(billId);
+    for (ChatMessage message : chatMessages) {
+      message.setNickname(
+        memberNickname.getOrDefault(
+          message.getUserId(), userMapper.getNickNameByUserId(message.getUserId())));
+    }
+    return chatMessages;
+  }
+  
   private HashMap<Long, String> getTeamMemberNickname(long billId) {
     List<TeamMember> members = teamMemberMapper.getTeamMemberByBillId(billId);
     HashMap<Long, String> memberNickname = new HashMap<>();

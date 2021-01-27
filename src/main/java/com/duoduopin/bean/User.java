@@ -2,6 +2,7 @@ package com.duoduopin.bean;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 用户数据的domain类
@@ -11,6 +12,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@ToString
 public class User {
   private long userId;
   

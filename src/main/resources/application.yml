@@ -4,7 +4,7 @@ spring:
   application:
     name: duo-duo-pin-demo
   datasource:
-    url: jdbc:mysql://123.57.12.189:3306/DuoDuoPin?serverTimezone=GMT%2B8&useSSL=false&tcpKeepAlive=true
+    url: jdbc:mysql://123.57.12.189:3306/DuoDuoPin?serverTimezone=Asia%2FShanghai&useSSL=false&tcpKeepAlive=true
     username: root
     password: zzhswdmz
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -12,7 +12,7 @@ spring:
       minimum-idle: 3
       maximum-pool-size: 15
       #      连接生命时长
-      max-lifetime: 1800000
+      max-lifetime: 1200000
       connection-test-query: SELECT 1
       #      连接idle状态最大时长
       idle-timeout: 600000

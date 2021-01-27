@@ -193,7 +193,7 @@ http://123.57.12.189:8080/ShareBill/del/{id}
 使用拼单 $id$ 代替路径上的 $\{id\}$ 即可  
 非管理员账户只能删除自己的拼单
 
-### 2.4 加入
+### 2.4 申请加入
 
 $PUT$ 方式发送至
 
@@ -202,6 +202,26 @@ http://123.57.12.189:8080/ShareBill/join/{id}
 ```
 
 使用拼单 $id$ 代替路径上的 $\{id\} 即可  
+
+### 2.5 允许加入
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/ShareBill/apply/{id}/allow
+```
+
+使用消息 $id$ 代替路径上的 $\{id\}$ 即可，只有组长可以处理该操作
+
+### 2.6 拒绝加入
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/ShareBill/apply/{id}/reject
+```
+
+使用消息 $id$ 代替路径上的 $\{id\}$ 即可，只有组长可以处理该操作
 
 ### 2.5 退出
 
@@ -215,8 +235,10 @@ http://123.57.12.189:8080/ShareBill/quit/{bill_id}/{user_id}
 
 ### 3.1 `WebSocket`
 
+小组聊天
+
 ```url
-ws://123.57.12.189:8080/ws/{bill_id}
+ws://123.57.12.189:8080/ws/chat/{bill_id}
 ```
 
 ### 3.2 查询小组聊天记录
@@ -227,6 +249,14 @@ $POST$ 方式发送至
 http://123.57.12.189:8080/chat/{id}
 ```
 
+返回：  
+$userId$  
+$billId$  
+$nickname$  
+$type$ ：$CHAT$, $JOIN$, $QUIT$  
+$time$  
+$content$  
+
 使用拼单 $id$ 替换路径上的 $id$ 即可
 
 ### 3.3 查询用户聊天记录
@@ -236,3 +266,50 @@ $POST$ 方式发送至
 ```url
 http://123.57.12.189:8080/chat/{bill_id}/{user_id}
 ```
+
+### 3.4 查询离线消息
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/{bill_id}/unchecked
+```
+
+## 4. 系统消息
+
+### 4.1 `WebSocket`
+
+在登录之后连接到
+
+```url
+ws://123.57.12.189:8080/ws/system/{user_id}
+```
+
+### 4.2 检查系统消息
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/system/check
+```
+
+返回：  
+$messageId$ ：消息 $id$  
+$senderId$ ：发送者 $id$  
+$receiverId$ ：接收者 $id$ ，可以为空（广播）  
+$billId$ ：可以为空（广播）  
+$type$ ：$BROAD$, $APPLY$, $ALLOW$, $REJEC$ ，后两者分别代表允许加入和拒绝加入  
+$time$  
+$content$  
+
+在登录之后进行检查，查收离线消息
+
+### 4.3 广播消息
+
+$PUT$ 方式发送至
+
+```url
+http://123.57.12.189:8080/system/broad
+```
+
+只有管理员才可以进行该请求

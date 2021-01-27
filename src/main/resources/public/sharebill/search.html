@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <title>Duo Duo Pin Demo</title>
@@ -50,9 +50,7 @@
   function join() {
     let billId = $('#chat-form > label:nth-child(1) > input').val();
     if (billId === "") return;
-    sendJSON('PUT', baseUrl + '/ShareBill/join/' + billId, false, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
-    sessionStorage.setItem('billId', billId);
-    window.location.href = 'chat.html';
+    sendJSON('PUT', baseUrl + 'ShareBill/join/' + billId, false, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
   }
 
   function goToChat() {
@@ -105,5 +103,60 @@
     </tr>
   </table>
 </div>
+<div id="system-message">
+  <table>
+    <tr>
+      <td>发送方</td>
+      <td>接收方</td>
+      <td>时间</td>
+      <td>内容</td>
+    </tr>
+  </table>
+</div>
+<script>
+  let systemMessageTable = $('#system-message > table');
+
+  function checkSystemMessage() {
+    let systemMessages = sendJSON('POST', baseUrl + 'system/check', false, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token')).content;
+    for (let i in systemMessages) {
+      systemMessageTable.html(systemMessageTable.html() + '<tr><td>' + systemMessages[i].senderId + '</td><td>' + systemMessages[i].receiverId + '</td><td>' + systemMessages[i].time + '</td><td>' + systemMessages[i].content + '</td></tr>');
+    }
+  }
+
+  function createSystemMessage() {
+    return sendJSON('PUT', baseUrl + 'system/broad', true, {
+      senderId: sessionStorage.getItem('uesrId'),
+      time: new Date(),
+      content: '测试消息'
+    }, sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
+  }
+
+  function applyPass(systemMessageId) {
+    return sendJSON('POST', baseUrl + 'ShareBill/apply/' + systemMessageId + '/allow', true, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
+  }
+
+  function applyReject(systemMessageId) {
+    return sendJSON('POST', baseUrl + 'ShareBill/apply/' + systemMessageId + '/reject', true, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
+  }
+
+  let websocket = new WebSocket('ws://localhost:8080/ws/system/' + sessionStorage.getItem('userId'));
+  websocket.onerror = function () {
+    alert('WebSocket创建错误');
+  }
+  websocket.onopen = function (event) {
+
+  }
+  websocket.onmessage = function (event) {
+    let systemMessage = JSON.parse(event.data);
+    let passButton = '';
+    let rejectButton = '';
+    if (systemMessage.type == 'APPLY') {
+      passButton = '<input type="button" onclick="applyPass(' + systemMessage.messageId + ')" value="同意"/>';
+      rejectButton = '<input type="button" onclick="applyReject(' + systemMessage.messageId + ')" value="拒绝"/>';
+    }
+    systemMessageTable.html(systemMessageTable.html() + '<tr><td>' + systemMessage.senderId + '</td><td>' + systemMessage.receiverId + '</td><td>' + new Date(systemMessage.time) + '</td><td>' + systemMessage.content + passButton + rejectButton + '</td></tr>');
+  }
+  checkSystemMessage();
+</script>
 </body>
 </html>

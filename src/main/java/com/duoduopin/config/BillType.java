@@ -1,7 +1,7 @@
 package com.duoduopin.config;
 
 /**
- * 拼单类型，最多为5个字母
+ * 拼单类型，最多为4个字母
  *
  * @author z217
  * @date 2020/08/07

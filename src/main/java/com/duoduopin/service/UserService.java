@@ -1,13 +1,15 @@
 package com.duoduopin.service;
 
 import com.duoduopin.bean.User;
-import com.duoduopin.config.Constants;
+import com.duoduopin.config.DuoDuoPinUtils;
 import com.duoduopin.dao.UserMapper;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.sql.Timestamp;
 
 /**
  * 用户服务层
@@ -47,16 +49,19 @@ public class UserService {
     }
     TokenModel token = tokenManager.createToken(user);
     log.info(username + " login success, token is created, exec in UserService.userLogin().");
+    if (userMapper.getLastOnlineByUesrId(user.getUserId()) == null)
+      updateLastOnlineByUserId(user.getUserId());
     return token;
   }
 
   public void userLogout(User user) {
     tokenManager.deleteToken(user.getUserId());
     log.info(user.getUsername() + " logout");
+    updateLastOnlineByUserId(user.getUserId());
   }
 
   public boolean deleteUser(User user, long userId) {
-    if (!Constants.checkIfAdmin(user.getUserId())) {
+    if (!DuoDuoPinUtils.checkIfAdmin(user.getUserId())) {
       log.warn(
         "An authorized delete is requested by "
           + user.getUserId()
@@ -67,5 +72,13 @@ public class UserService {
     log.info(
       userId + " was deleted by " + user.getUserId() + ", exec in UserService.deleteUser().");
     return true;
+  }
+  
+  public Timestamp getLastOnlineByUserId(long userId) {
+    return userMapper.getLastOnlineByUesrId(userId);
+  }
+  
+  public int updateLastOnlineByUserId(long userId) {
+    return userMapper.updateLastOnlineByUserId(userId);
   }
 }

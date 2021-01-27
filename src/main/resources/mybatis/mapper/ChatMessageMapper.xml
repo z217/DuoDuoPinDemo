@@ -25,4 +25,10 @@
           and bill_id = #{billId}
           and user_id = #{userId}
     </select>
+    <select id="getChatMessageByBillIdAndLastOnline" resultType="com.duoduopin.bean.ChatMessage">
+        select *
+        from chat_message
+        where bill_id = #{billId}
+          and time > #{lastOnline}
+    </select>
 </mapper>

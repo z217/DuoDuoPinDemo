@@ -1,7 +1,7 @@
 package com.duoduopin.manager.impl;
 
 import com.duoduopin.bean.User;
-import com.duoduopin.config.Constants;
+import com.duoduopin.config.DuoDuoPinUtils;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class RedisTokenManagerImpl implements TokenManager {
     //    存储在redis中并设置时限
     redisTemplate
       .boundValueOps(user.getUserId())
-      .set(token, Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+      .set(token, DuoDuoPinUtils.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
     return tokenModel;
   }
 
@@ -42,7 +42,7 @@ public class RedisTokenManagerImpl implements TokenManager {
       //      在进行过一次有效验证之后刷新时限
       redisTemplate
         .boundValueOps(tokenModel.getUserId())
-        .expire(Constants.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
+        .expire(DuoDuoPinUtils.TOKEN_EXPIRES_HOUR, TimeUnit.HOURS);
       return true;
     }
     return false;
@@ -57,7 +57,7 @@ public class RedisTokenManagerImpl implements TokenManager {
     String token = params[1];
     return new TokenModel(id, token, null, null);
   }
-
+  
   @Override
   public void deleteToken(long id) {
     redisTemplate.delete(id);

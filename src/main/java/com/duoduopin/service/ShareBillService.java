@@ -1,20 +1,14 @@
 package com.duoduopin.service;
 
-import com.duoduopin.bean.ShareBill;
-import com.duoduopin.bean.ShareBillWithDistance;
-import com.duoduopin.bean.TeamMember;
-import com.duoduopin.bean.User;
+import com.duoduopin.bean.*;
 import com.duoduopin.config.BillType;
-import com.duoduopin.config.Constants;
-import com.duoduopin.config.MessageType;
-import com.duoduopin.dao.ChatMessageMapper;
-import com.duoduopin.dao.ShareBillMapper;
-import com.duoduopin.dao.TeamMemberMapper;
-import com.duoduopin.dao.UserMapper;
+import com.duoduopin.config.DuoDuoPinUtils;
+import com.duoduopin.dao.*;
 import com.duoduopin.manager.Spatial4jManager;
 import com.duoduopin.pojo.SearchPOJO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -43,6 +37,8 @@ public class ShareBillService {
   private TeamMemberMapper teamMemberMapper;
   @Autowired
   private ChatMessageMapper chatMessageMapper;
+  @Autowired
+  private SystemMessageMapper systemMessageMapper;
   
   public Long createShareBill(
     long userId,
@@ -105,7 +101,7 @@ public class ShareBillService {
     setShareBillNickname(shareBills);
     return shareBills;
   }
-  
+
   public List<ShareBillWithDistance> getShareBillBySearchInfo(SearchPOJO info) {
     if (info.getDistance() != null && info.getLongitude() != null && info.getLatitude() != null)
       info.getDistance().setGeohashs(info.getLongitude(), info.getLatitude(), info.getGeohashs());
@@ -142,7 +138,8 @@ public class ShareBillService {
   }
 
   public boolean deleteShareBill(long billId, long userId) {
-    if (!Constants.checkIfAdmin(userId) && shareBillMapper.getUserIdByBillId(billId) != userId) {
+    if (!DuoDuoPinUtils.checkIfAdmin(userId)
+      && shareBillMapper.getUserIdByBillId(billId) != userId) {
       log.warn(
         "An unauthorized delete is requested by "
           + userId
@@ -157,65 +154,56 @@ public class ShareBillService {
   public boolean isTeamMember(long userId, long billId) {
     List<TeamMember> members = teamMemberMapper.getTeamMemberByBillId(billId);
     for (TeamMember member : members) if (member.getUserId() == userId) return true;
-    if (Constants.checkIfAdmin(userId)) return true;
-    log.info(
-      userId
-        + " try to access team "
-        + billId
-        + " without authority, exec in ShareBillService.isTeamMember().");
+    if (DuoDuoPinUtils.checkIfAdmin(userId)) return true;
     return false;
   }
   
-  public boolean joinTeam(long billId, User user) {
+  public boolean isApplicable(long billId) {
     ShareBill shareBill = shareBillMapper.getShareBillPeopleByBillId(billId);
-    if (shareBill.getMaxPeople() - shareBill.getCurPeople() == 0) return false;
-    if (shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople() + 1) == 0)
-      return false;
-    if (teamMemberMapper.joinTeam(billId, user.getUserId()) == 0) {
-      shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople());
-      return false;
-    }
-    chatMessageMapper.createChatMessage(
-      user.getUserId(),
-      billId,
-      MessageType.JOIN,
-      Timestamp.valueOf(LocalDateTime.now()),
-      user.getNickname() + "加入了小组");
-    return true;
+    return shareBill.getMaxPeople() - shareBill.getCurPeople() != 0;
   }
   
-  public boolean quitTeam(User user, long billId, long userId) {
+  public boolean isLeader(long billId, long userId) {
+    return userId == shareBillMapper.getUserIdByBillId(billId);
+  }
+  
+  @Async
+  public void joinTeam(long billId, long userId) {
     ShareBill shareBill = shareBillMapper.getShareBillPeopleByBillId(billId);
-    if (user.getUserId() != shareBill.getUserId() && user.getUserId() != userId) {
-      log.warn(
-        user.getUserId()
-          + " try to delete "
-          + userId
-          + " from team "
-          + billId
-          + ", exec in ShareBillService.quitTeam().");
-      return false;
-    }
-    if (user.getUserId() == shareBill.getUserId() && user.getUserId() == userId) {
+    shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople() + 1);
+    teamMemberMapper.joinTeam(billId, userId);
+    chatMessageMapper.createChatMessage(
+      userId,
+      billId,
+      ChatMessage.MessageType.JOIN,
+      Timestamp.valueOf(LocalDateTime.now()),
+      userMapper.getNickNameByUserId(userId) + "加入了小组");
+  }
+  
+  @Async
+  public void quitTeam(User user, long billId, long userId) {
+    ShareBill shareBill = shareBillMapper.getShareBillPeopleByBillId(billId);
+    if (shareBill.getUserId() == userId) {
       //      组长退出自动解散
       shareBillMapper.deleteShareBill(billId);
-      return true;
+      return;
     }
-    if (shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople() - 1) == 0)
-      return false;
-    if (teamMemberMapper.quitTeam(billId, userId) == 0) {
-      log.warn(
-        userId + " quit from team " + billId + " failed, exec in ShareBillService.quitTeam().");
-      shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople());
-      return false;
-    }
+    shareBillMapper.updateShareBillCurPeople(billId, shareBill.getCurPeople() - 1);
+    teamMemberMapper.quitTeam(billId, userId);
     String nickname = userMapper.getNickNameByUserId(userId);
     String content = "";
     if (user.getUserId() == userId) content = nickname + "退出了小组";
     else content = nickname + "被" + user.getNickname() + "请出了小组";
     chatMessageMapper.createChatMessage(
-      userId, billId, MessageType.QUIT, Timestamp.valueOf(LocalDateTime.now()), content);
-    return true;
+      userId,
+      billId,
+      ChatMessage.MessageType.QUIT,
+      Timestamp.valueOf(LocalDateTime.now()),
+      content);
+  }
+  
+  public Long getUserIdByBillId(long billId) {
+    return shareBillMapper.getUserIdByBillId(billId);
   }
   
   private ShareBill setShareBillNickname(ShareBill shareBill) {

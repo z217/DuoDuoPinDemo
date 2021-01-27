@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <title>Duo Duo Pin Demo</title>
@@ -51,7 +51,7 @@
   }
 
   let websocket = null;
-  if ('WebSocket' in window) websocket = new WebSocket('ws://localhost:8080/ws/' + sessionStorage.getItem('billId'));
+  if ('WebSocket' in window) websocket = new WebSocket('ws://localhost:8080/ws/chat/' + sessionStorage.getItem('billId'));
   else alert('WebSocket is not supported in this explorer, please use latest explorer');
 
   websocket.onerror = function () {

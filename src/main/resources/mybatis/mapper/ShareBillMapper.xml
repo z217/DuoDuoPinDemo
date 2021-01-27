@@ -23,12 +23,34 @@
         where bill_id = #{billId}
     </delete>
     <select id="getShareBillsByUserId" resultType="com.duoduopin.bean.ShareBill">
-        select *
+        select bill_id,
+               user_id,
+               type,
+               description,
+               address,
+               time,
+               cur_people,
+               max_people,
+               price,
+               longitude,
+               latitude,
+               geohash
         from share_bill
         where user_id = #{userId}
     </select>
     <select id="getShareBillByBillId" resultType="com.duoduopin.bean.ShareBill">
-        select *
+        select bill_id,
+               user_id,
+               type,
+               description,
+               address,
+               time,
+               cur_people,
+               max_people,
+               price,
+               longitude,
+               latitude,
+               geohash
         from share_bill
         where bill_id = #{billId}
     </select>
@@ -38,7 +60,18 @@
         where bill_id = #{billId}
     </select>
     <select id="getShareBillsBySearchInfo" resultType="com.duoduopin.bean.ShareBill">
-        select *
+        select bill_id,
+        user_id,
+        type,
+        description,
+        address,
+        time,
+        cur_people,
+        max_people,
+        price,
+        longitude,
+        latitude,
+        geohash
         from share_bill
         <where>
             <if test="type != null">type = #{type}</if>
@@ -67,6 +100,11 @@
     </select>
     <select id="getShareBillPeopleByBillId" resultType="com.duoduopin.bean.ShareBill">
         select bill_id, user_id, cur_people, max_people
+        from share_bill
+        where bill_id = #{billId}
+    </select>
+    <select id="getTitleByBillId" resultType="java.lang.String">
+        select title
         from share_bill
         where bill_id = #{billId}
     </select>

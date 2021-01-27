@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.duoduopin.dao.SystemMessageMapper">
+    <insert id="insertSystemMessage" useGeneratedKeys="true" keyProperty="messageId">
+        insert into system_message(sender_id, receiver_id, bill_id, type, time, content) value (#{senderId},
+                                                                                                #{receiverId},
+                                                                                                #{billId},
+                                                                                                #{type}, #{time},
+                                                                                                #{content})
+    </insert>
+    <delete id="deleteSystemMessageByMessageId">
+        delete
+        from system_message
+        where message_id = #{messageId}
+    </delete>
+    <select id="getSystemMessageByUserIdAndLastOnline" resultType="com.duoduopin.bean.SystemMessage">
+        select *
+        from system_message
+        where (receiver_id is null or receiver_id = #{userId})
+          and time >= #{lastOnline}
+    </select>
+    <select id="getSystemMessageByMessageId" resultType="com.duoduopin.bean.SystemMessage">
+        select *
+        from system_message
+        where message_id = #{messageId}
+    </select>
+    <select id="isApplySystemMessageExistsByUserIdAndBillId" resultType="java.lang.Integer">
+        select 1
+        from system_message
+        where type = 'APPLY'
+          and sender_id = #{userId}
+          and bill_id = #{billId}
+    </select>
+</mapper>

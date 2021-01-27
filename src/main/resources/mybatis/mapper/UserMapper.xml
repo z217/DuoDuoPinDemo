@@ -3,19 +3,25 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.duoduopin.dao.UserMapper">
+    <update id="updateLastOnlineByUserId">
+        update user set last_online = now() where user_id = #{userId}
+    </update>
     <delete id="deleteUser">
         delete
         from user
         where user_id = #{userId}
     </delete>
     <select id="getUserById" resultType="com.duoduopin.bean.User">
-        select * from user where user_id = #{userId}
+        select user_id, username, nickname from user where user_id = #{userId}
     </select>
     <select id="getUserByUsername" resultType="com.duoduopin.bean.User">
-        select * from user where username = #{username}
+        select user_id, username, nickname, password from user where username = #{username}
     </select>
     <select id="getNickNameByUserId" resultType="java.lang.String">
         select nickname from user where user_id = #{userId}
+    </select>
+    <select id="getLastOnlineByUesrId" resultType="java.sql.Timestamp">
+        select last_online from user where user_id = #{userId}
     </select>
     <insert id="insertUser" parameterType="com.duoduopin.bean.User" useGeneratedKeys="true" keyProperty="userId">
         insert into user(username, nickname, password) values(#{username}, #{nickname}, #{password})

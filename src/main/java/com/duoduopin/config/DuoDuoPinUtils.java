@@ -3,12 +3,11 @@ package com.duoduopin.config;
 import java.util.Arrays;
 
 /**
- * 常量
- *
  * @author z217
+ * @description 实用类
  * @date 2021/01/06
  */
-public abstract class Constants {
+public abstract class DuoDuoPinUtils {
   //  当前登录用户id的字段名
   public static final String CURRENT_USER_ID = "CURRENT_USER_ID";
   //  token有效期

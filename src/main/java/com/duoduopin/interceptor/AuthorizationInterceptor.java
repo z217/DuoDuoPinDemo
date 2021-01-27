@@ -1,7 +1,7 @@
 package com.duoduopin.interceptor;
 
 import com.duoduopin.annotation.Authorization;
-import com.duoduopin.config.Constants;
+import com.duoduopin.config.DuoDuoPinUtils;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,8 @@ import java.lang.reflect.Method;
  */
 @Component
 public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
-  @Autowired private TokenManager manager;
+  @Autowired
+  private TokenManager tokenManager;
   
   @Override
   public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -32,9 +33,9 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
     Method method = ((HandlerMethod) handler).getMethod();
     if (method.getAnnotation(Authorization.class) != null) {
       //    从header中得到token
-      TokenModel tokenModel = manager.getToken(request.getHeader(Constants.AUTHORIZATION));
-      if (manager.checkToken(tokenModel)) {
-        request.setAttribute(Constants.CURRENT_USER_ID, tokenModel.getUserId());
+      TokenModel tokenModel = tokenManager.getToken(request.getHeader(DuoDuoPinUtils.AUTHORIZATION));
+      if (tokenManager.checkToken(tokenModel)) {
+        request.setAttribute(DuoDuoPinUtils.CURRENT_USER_ID, tokenModel.getUserId());
         return true;
       } else {
         //      验证token失败，并且方法标注了@Authrization，返回401

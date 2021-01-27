@@ -2,7 +2,7 @@ package com.duoduopin.resolver;
 
 import com.duoduopin.annotation.CurrentUser;
 import com.duoduopin.bean.User;
-import com.duoduopin.config.Constants;
+import com.duoduopin.config.DuoDuoPinUtils;
 import com.duoduopin.dao.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -39,11 +39,11 @@ public class CurrentUserMethodArgumentResolver implements HandlerMethodArgumentR
       throws Exception {
     //    取出当前用户id
     Long currentUserId =
-        (Long)
-            nativeWebRequest.getAttribute(
-                Constants.CURRENT_USER_ID, RequestAttributes.SCOPE_REQUEST);
+      (Long)
+        nativeWebRequest.getAttribute(
+          DuoDuoPinUtils.CURRENT_USER_ID, RequestAttributes.SCOPE_REQUEST);
     if (currentUserId == null)
-      throw new MissingServletRequestPartException(Constants.CURRENT_USER_ID);
+      throw new MissingServletRequestPartException(DuoDuoPinUtils.CURRENT_USER_ID);
     return userMapper.getUserById(currentUserId);
   }
 }
