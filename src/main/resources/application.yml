@@ -4,9 +4,9 @@ spring:
   application:
     name: duo-duo-pin-demo
   datasource:
-    url: jdbc:mysql://123.57.12.189:3306/DuoDuoPin?serverTimezone=Asia%2FShanghai&useSSL=false&tcpKeepAlive=true
+    url: jdbc:mysql://****:3306/DuoDuoPin?serverTimezone=Asia%2FShanghai&useSSL=false&tcpKeepAlive=true
     username: root
-    password: zzhswdmz
+    password: ****
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       minimum-idle: 3
@@ -31,9 +31,9 @@ spring:
       time-between-eviction-runs-millis: 300000
       test-while-idle: true
   redis:
-    host: 123.57.12.189
+    host: *****
     port: 6379
-    password: redisz217
+    password: ****
     timeout: 60s
   mvc:
     hiddenmethod:

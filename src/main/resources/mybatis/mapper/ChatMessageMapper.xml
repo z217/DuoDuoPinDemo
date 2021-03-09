@@ -3,6 +3,7 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.duoduopin.dao.ChatMessageMapper">
+    <cache eviction="LRU" />
     <insert id="createChatMessage">
         insert into chat_message (user_id, bill_id, type, time, content) value (#{userId}, #{billId}, #{type}, #{time}, #{content})
     </insert>
@@ -11,12 +12,14 @@
         select *
         from chat_message
         where bill_id = #{billId}
+        limit 1000
     </select>
     <select id="getChatMessageByUserId" resultType="com.duoduopin.bean.ChatMessage">
         select *
         from chat_message
         where type = 'CHAT'
           and user_id = #{userId}
+        limit 1000
     </select>
     <select id="getChatMessageByBillIdAndUserId" resultType="com.duoduopin.bean.ChatMessage">
         select *
@@ -24,11 +27,13 @@
         where type = 'CHAT'
           and bill_id = #{billId}
           and user_id = #{userId}
+        limit 1000
     </select>
     <select id="getChatMessageByBillIdAndLastOnline" resultType="com.duoduopin.bean.ChatMessage">
         select *
         from chat_message
         where bill_id = #{billId}
           and time > #{lastOnline}
+        limit 1000
     </select>
 </mapper>

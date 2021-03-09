@@ -1,5 +1,6 @@
 package com.duoduopin.config;
 
+import com.duoduopin.interceptor.AdministratorInterceptor;
 import com.duoduopin.interceptor.AuthorizationInterceptor;
 import com.duoduopin.resolver.CurrentUserMethodArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,17 @@ import java.util.List;
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-  @Autowired private AuthorizationInterceptor authorizationInterceptor;
-  @Autowired private CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver;
+  @Autowired
+  private AuthorizationInterceptor authorizationInterceptor;
+  @Autowired
+  private AdministratorInterceptor administratorInterceptor;
+  @Autowired
+  private CurrentUserMethodArgumentResolver currentUserMethodArgumentResolver;
 
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(authorizationInterceptor);
+    registry.addInterceptor(administratorInterceptor);
   }
 
   @Override

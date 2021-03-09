@@ -15,14 +15,14 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * ShareBill服务层
  *
  * @author z217
- * @date 2021/01/18
+ * @date 2021/03/09
  */
 @Service
 @Slf4j
@@ -90,9 +90,7 @@ public class ShareBillService {
   public List<ShareBill> getShareBillByBillId(long billId) {
     List<ShareBill> shareBills = new ArrayList<>();
     ShareBill bill = shareBillMapper.getShareBillByBillId(billId);
-    if (bill != null) {
-      shareBills.add(setShareBillNickname(bill));
-    }
+    if (bill != null) shareBills.add(setShareBillNickname(bill));
     return shareBills;
   }
 
@@ -119,17 +117,18 @@ public class ShareBillService {
         info.getDistance());
     log.info(
       "Sharebills are got by searchinfo, exec in ShareBillService.getShareBillBySearchInfo()");
-    List<ShareBillWithDistance> shareBillWithDistances = new LinkedList<>();
-    for (ShareBill shareBill : shareBills) {
-      shareBillWithDistances.add(
-        new ShareBillWithDistance(
-          setShareBillNickname(shareBill),
-          spatial4jManager.getDistance(
-            shareBill.getLongitude(),
-            shareBill.getLatitude(),
-            info.getLongitude(),
-            info.getLatitude())));
-    }
+    List<ShareBillWithDistance> shareBillWithDistances =
+      shareBills.stream()
+        .map(
+          shareBill ->
+            new ShareBillWithDistance(
+              setShareBillNickname(shareBill),
+              spatial4jManager.getDistance(
+                shareBill.getLongitude(),
+                shareBill.getLatitude(),
+                info.getLongitude(),
+                info.getLatitude())))
+        .collect(Collectors.toList());
     if (info.getDistance() != null) {
       info.getDistance().distanceFilter(shareBillWithDistances);
       log.info("Sharebills are filtered, exec in ShareBillService.getShareBillBySearchInfo()");
@@ -150,10 +149,10 @@ public class ShareBillService {
     log.info("A ShareBill is deleted, exec in ShareBillService.deleteShareBill().");
     return true;
   }
-  
+
   public boolean isTeamMember(long userId, long billId) {
     List<TeamMember> members = teamMemberMapper.getTeamMemberByBillId(billId);
-    for (TeamMember member : members) if (member.getUserId() == userId) return true;
+    if (members.stream().anyMatch(member -> member.getUserId() == userId)) return true;
     if (DuoDuoPinUtils.checkIfAdmin(userId)) return true;
     return false;
   }
@@ -212,8 +211,8 @@ public class ShareBillService {
   }
   
   private void setShareBillNickname(List<? extends ShareBill> shareBills) {
-    for (ShareBill shareBill : shareBills) {
-      shareBill.setNickname(userMapper.getUserById(shareBill.getUserId()).getNickname());
-    }
+    shareBills.forEach(
+      shareBill ->
+        shareBill.setNickname(userMapper.getUserById(shareBill.getUserId()).getNickname()));
   }
 }

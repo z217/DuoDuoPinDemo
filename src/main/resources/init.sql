@@ -14,7 +14,8 @@ CREATE TABLE `user`
     `nickname`    VARCHAR(20)        NOT NULL,
     `password`    VARCHAR(20)        NOT NULL,
     `last_online` TIMESTAMP          NULL,
-    PRIMARY KEY (`user_id`)
+    PRIMARY KEY (`user_id`),
+    KEY (`username`)
 );
 
 CREATE TABLE share_bill
@@ -35,6 +36,8 @@ CREATE TABLE share_bill
     PRIMARY KEY (`bill_id`),
     FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY (`user_id`),
+    KEY (`type`, `geohash`(5)),
     CHECK ( `cur_people` > 0 AND `cur_people` <= `max_people` )
 );
 
@@ -46,7 +49,8 @@ CREATE TABLE team_member
     FOREIGN KEY (`bill_id`) REFERENCES share_bill (`bill_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY (`user_id`)
 );
 
 CREATE TABLE chat_message
@@ -60,7 +64,8 @@ CREATE TABLE chat_message
     FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`bill_id`) REFERENCES share_bill (`bill_id`)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY (`bill_id`)
 );
 
 CREATE TABLE system_message
@@ -78,7 +83,9 @@ CREATE TABLE system_message
     FOREIGN KEY (`receiver_id`) REFERENCES `user` (`user_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (`bill_id`) REFERENCES `share_bill` (`bill_id`)
-        ON DELETE CASCADE ON UPDATE CASCADE
+        ON DELETE CASCADE ON UPDATE CASCADE,
+    KEY (`time`, `receiver_id`),
+    KEY (`type`, `sender_id`, `bill_id`)
 )
 
 INSERT INTO `user` (`username`, `nickname`, `password`)

@@ -8,7 +8,7 @@ package com.duoduopin.config;
  */
 public enum ResultStatus {
   SUCCESS(100, "success"),
-  UNKOWN(-1000, "unknown problem"),
+  UNKNOWN(-1000, "unknown problem"),
   USERNAME_OR_PASSWORD_ERROR(-1001, "Username or password error"),
   USER_NOT_FOUND(-1002, "User not found"),
   USER_NOT_LOGIN(-1003, "User not login"),

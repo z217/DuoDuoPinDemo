@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint(value = "/ws/chat/{id}")
 public class ChatWebSocket {
   private static ChatService chatService;
-  private static ConcurrentHashMap<Long, List<ChatWebSocket>> webSocketMap = null;
+  private static ConcurrentHashMap<Long, List<ChatWebSocket>> webSocketMap;
   
   static {
     webSocketMap = new ConcurrentHashMap<>();
