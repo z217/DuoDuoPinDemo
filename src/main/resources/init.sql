@@ -37,7 +37,7 @@ CREATE TABLE share_bill
     FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
     KEY (`user_id`),
-    KEY (`type`, `geohash`(5)),
+    fulltext (`description`, `address`),
     CHECK ( `cur_people` > 0 AND `cur_people` <= `max_people` )
 );
 

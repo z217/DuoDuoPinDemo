@@ -30,9 +30,12 @@ public class AdministratorInterceptor extends HandlerInterceptorAdapter {
     Method method = ((HandlerMethod) handler).getMethod();
     if (method.getAnnotation(Administrator.class) != null) {
       TokenModel tokenModel =
-          tokenManager.getToken(request.getHeader(DuoDuoPinUtils.AUTHORIZATION));
-      return DuoDuoPinUtils.checkIfAdmin(tokenModel.getUserId());
+        tokenManager.getToken(request.getHeader(DuoDuoPinUtils.AUTHORIZATION));
+      if (!DuoDuoPinUtils.checkIfAdmin(tokenModel.getUserId())) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return false;
+      } else request.setAttribute(DuoDuoPinUtils.CURRENT_USER_ID, tokenModel.getUserId());
     }
-    return false;
+    return true;
   }
 }

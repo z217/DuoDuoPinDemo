@@ -3,7 +3,6 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.duoduopin.dao.ShareBillMapper">
-    <cache eviction="LRU" />
     <insert id="insertShareBill" parameterType="com.duoduopin.bean.ShareBill" useGeneratedKeys="true"
             keyProperty="billId">
         insert into share_bill(user_id, title, type, description, address, time, cur_people, max_people, price,
