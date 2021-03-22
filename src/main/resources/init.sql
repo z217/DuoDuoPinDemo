@@ -14,8 +14,7 @@ CREATE TABLE `user`
     `nickname`    VARCHAR(20)        NOT NULL,
     `password`    VARCHAR(20)        NOT NULL,
     `last_online` TIMESTAMP          NULL,
-    PRIMARY KEY (`user_id`),
-    KEY (`username`)
+    PRIMARY KEY (`user_id`)
 );
 
 CREATE TABLE share_bill
@@ -85,7 +84,7 @@ CREATE TABLE system_message
     FOREIGN KEY (`bill_id`) REFERENCES `share_bill` (`bill_id`)
         ON DELETE CASCADE ON UPDATE CASCADE,
     KEY (`time`, `receiver_id`),
-    KEY (`type`, `sender_id`, `bill_id`)
+    KEY (`sender_id`, `bill_id`)
 )
 
 INSERT INTO `user` (`username`, `nickname`, `password`)

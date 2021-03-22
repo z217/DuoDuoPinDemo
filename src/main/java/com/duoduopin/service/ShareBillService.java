@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * ShareBill服务层
  *
  * @author z217
- * @date 2021/03/09
+ * @date 2021/03/22
  */
 @Service
 @Slf4j
@@ -149,7 +149,11 @@ public class ShareBillService {
     log.info("A ShareBill is deleted, exec in ShareBillService.deleteShareBill().");
     return true;
   }
-
+  
+  public List<TeamMember> getTeamMember(long billId) {
+    return teamMemberMapper.getTeamMemberByBillId(billId);
+  }
+  
   public boolean isTeamMember(long userId, long billId) {
     List<TeamMember> members = teamMemberMapper.getTeamMemberByBillId(billId);
     if (members.stream().anyMatch(member -> member.getUserId() == userId)) return true;
@@ -161,11 +165,11 @@ public class ShareBillService {
     ShareBill shareBill = shareBillMapper.getShareBillPeopleByBillId(billId);
     return shareBill.getMaxPeople() - shareBill.getCurPeople() != 0;
   }
-  
+
   public boolean isLeader(long billId, long userId) {
     return userId == shareBillMapper.getUserIdByBillId(billId);
   }
-  
+
   @Async
   public void joinTeam(long billId, long userId) {
     ShareBill shareBill = shareBillMapper.getShareBillPeopleByBillId(billId);

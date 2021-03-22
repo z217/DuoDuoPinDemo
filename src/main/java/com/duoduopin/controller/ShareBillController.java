@@ -21,7 +21,7 @@ import java.util.List;
  * 拼单控制器
  *
  * @author z217
- * @date 2021/01/25
+ * @date 2021/03/22
  * @see com.duoduopin.service.ShareBillService
  * @see com.duoduopin.service.SystemMessageService
  * @see com.duoduopin.controller.SystemMessageWebSocket
@@ -84,6 +84,12 @@ public class ShareBillController {
   public ResponseEntity<ResultModel> getShareBillsByUserId(@PathVariable("id") long userId) {
     List<ShareBill> shareBills = shareBillService.getShareBillsByUserId(userId);
     return new ResponseEntity<>(ResultModel.ok(shareBills), HttpStatus.OK);
+  }
+  
+  @PostMapping("/team/{id}")
+  public ResponseEntity<ResultModel> getTeamMemberByBillId(@PathVariable("id") long billId) {
+    List<TeamMember> members = shareBillService.getTeamMember(billId);
+    return new ResponseEntity<>(ResultModel.ok(members), HttpStatus.OK);
   }
   
   @Authorization

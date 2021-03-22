@@ -223,12 +223,20 @@ http://123.57.12.189:8080/ShareBill/apply/{id}/reject
 
 使用消息 $id$ 代替路径上的 $\{id\}$ 即可，只有组长可以处理该操作
 
-### 2.5 退出
+### 2.7 退出
 
 $DELETE$ 方式发送至
 
 ```url
 http://123.57.12.189:8080/ShareBill/quit/{bill_id}/{user_id}
+```
+
+### 2.8 成员查询
+
+$POST$ 方式发送至
+
+```url
+http://123.57.12.189:8080/ShareBill/team/{bill_id}
 ```
 
 ## 3. 聊天
