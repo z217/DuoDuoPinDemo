@@ -23,25 +23,28 @@
         where bill_id = #{billId}
     </delete>
     <select id="getShareBillsByUserId" resultType="com.duoduopin.bean.ShareBill">
-        select bill_id,
-               user_id,
-               type,
-               description,
-               address,
-               time,
-               cur_people,
-               max_people,
-               price,
-               longitude,
-               latitude,
-               geohash
-        from share_bill
-        where user_id = #{userId}
+        select s.bill_id,
+               s.user_id,
+               s.title,
+               s.type,
+               s.description,
+               s.address,
+               s.time,
+               s.cur_people,
+               s.max_people,
+               s.price,
+               s.longitude,
+               s.latitude,
+               s.geohash
+        from share_bill s
+                 right join (select bill_id from team_member t where t.user_id = #{userId}) tb
+                            on tb.bill_id = s.bill_id
         limit 1000
     </select>
     <select id="getShareBillByBillId" resultType="com.duoduopin.bean.ShareBill">
         select bill_id,
                user_id,
+               title,
                type,
                description,
                address,
@@ -63,6 +66,7 @@
     <select id="getShareBillsBySearchInfo" resultType="com.duoduopin.bean.ShareBill">
         select bill_id,
         user_id,
+        title,
         type,
         description,
         address,

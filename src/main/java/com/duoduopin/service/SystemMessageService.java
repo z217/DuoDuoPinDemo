@@ -14,9 +14,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @description 系统消息服务层
  * @author z217
- * @date 2021/01/25
+ * @description 系统消息服务层
+ * @date 2021/03/23
  * @see com.duoduopin.dao.SystemMessageMapper
  * @see com.duoduopin.dao.UserMapper
  * @see com.duoduopin.controller.SystemMessageWebSocket
@@ -85,17 +85,18 @@ public class SystemMessageService {
         break;
       case ALLOW:
         systemMessage =
-            new SystemMessage(
-                senderId,
-                receiverId,
-                billId,
-                type,
-                Timestamp.valueOf(LocalDateTime.now()),
-                "您的申请加入小组”" + shareBillMapper.getTitleByBillId(billId) + "已通过。");
+          new SystemMessage(
+            senderId,
+            receiverId,
+            billId,
+            type,
+            Timestamp.valueOf(LocalDateTime.now()),
+            "您的申请加入小组”" + shareBillMapper.getTitleByBillId(billId) + "“已通过。");
         break;
     }
     systemMessageMapper.insertSystemMessage(systemMessage);
-    SystemMessageWebSocket.sendToUser(systemMessage);
+    if (SystemMessageWebSocket.sendToUser(systemMessage))
+      userMapper.updateLastOnlineByUserId(systemMessage.getReceiverId());
   }
 
   @Async
