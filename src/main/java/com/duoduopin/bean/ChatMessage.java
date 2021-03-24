@@ -19,6 +19,7 @@ public class ChatMessage implements Serializable {
   private long userId;
   private long billId;
   private String nickname;
+  private String billTitle;
   private MessageType type;
   private Timestamp time;
   private String content;

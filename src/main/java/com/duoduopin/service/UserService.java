@@ -49,8 +49,7 @@ public class UserService {
     }
     TokenModel token = tokenManager.createToken(user);
     log.info(username + " login success, token is created, exec in UserService.userLogin().");
-    if (userMapper.getLastOnlineByUesrId(user.getUserId()) == null)
-      updateLastOnlineByUserId(user.getUserId());
+    if (user.getLastOnline() == null) updateLastOnlineByUserId(user.getUserId());
     return token;
   }
 

@@ -20,9 +20,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * @description 系统消息控制器
  * @author z217
- * @date 2021/01/25
+ * @description 系统消息控制器
+ * @date 2021/03/23
  * @see com.duoduopin.service.SystemMessageService
  * @see com.duoduopin.service.UserService
  * @see com.duoduopin.controller.SystemMessageWebSocket
@@ -53,9 +53,9 @@ public class SystemMessageController {
   @Authorization
   @PostMapping("/check")
   public ResponseEntity<ResultModel> getSystemMessagesByUser(@CurrentUser User user) {
-    Timestamp lastOnline = userService.getLastOnlineByUserId(user.getUserId());
     List<SystemMessage> messages =
-        systemMessageService.getSystemMessagesByUserIdAndLastOnline(user.getUserId(), lastOnline);
+      systemMessageService.getSystemMessagesByUserIdAndLastOnline(
+        user.getUserId(), user.getLastOnline());
     userService.updateLastOnlineByUserId(user.getUserId());
     return new ResponseEntity<>(ResultModel.ok(messages), HttpStatus.OK);
   }

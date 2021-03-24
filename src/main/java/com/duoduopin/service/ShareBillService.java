@@ -149,11 +149,11 @@ public class ShareBillService {
     log.info("A ShareBill is deleted, exec in ShareBillService.deleteShareBill().");
     return true;
   }
-  
+
   public List<TeamMember> getTeamMember(long billId) {
     return teamMemberMapper.getTeamMemberByBillId(billId);
   }
-  
+
   public boolean isTeamMember(long userId, long billId) {
     List<TeamMember> members = teamMemberMapper.getTeamMemberByBillId(billId);
     if (members.stream().anyMatch(member -> member.getUserId() == userId)) return true;
@@ -207,6 +207,10 @@ public class ShareBillService {
   
   public Long getUserIdByBillId(long billId) {
     return shareBillMapper.getUserIdByBillId(billId);
+  }
+  
+  public String getTitleByBillId(long billId) {
+    return shareBillMapper.getTitleByBillId(billId);
   }
   
   private ShareBill setShareBillNickname(ShareBill shareBill) {

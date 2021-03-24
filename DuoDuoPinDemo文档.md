@@ -261,6 +261,7 @@ http://123.57.12.189:8080/chat/{id}
 $userId$  
 $billId$  
 $nickname$  
+$billTitle$
 $type$ ：$CHAT$, $JOIN$, $QUIT$  
 $time$  
 $content$  

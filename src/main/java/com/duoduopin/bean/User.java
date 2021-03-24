@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.sql.Timestamp;
+
 /**
  * 用户数据的domain类
  *
@@ -21,6 +23,8 @@ public class User {
   private String nickname;
   
   private String password;
+  
+  private Timestamp lastOnline;
   
   public User(String username, String nickname, String password) {
     this.username = username;
