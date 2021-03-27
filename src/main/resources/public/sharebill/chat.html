@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Duo Duo Pin Demo</title>
-  <script src="../script/http_code.jquery.com_jquery-3.5.1.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+          src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="../script/httprequest.js"></script>
 </head>
 <body>
@@ -51,7 +52,7 @@
   }
 
   let websocket = null;
-  if ('WebSocket' in window) websocket = new WebSocket('ws://localhost:8080/ws/chat/' + sessionStorage.getItem('billId'));
+  if ('WebSocket' in window) websocket = new WebSocket(wsBaseUrl + 'ws/chat/' + sessionStorage.getItem('billId'));
   else alert('WebSocket is not supported in this explorer, please use latest explorer');
 
   websocket.onerror = function () {

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Duo Duo Pin Demo</title>
-  <script src="../script/http_code.jquery.com_jquery-3.5.1.js"></script>
+  <script crossorigin="anonymous" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk="
+          src="https://code.jquery.com/jquery-3.6.0.js"></script>
   <script src="../script/httprequest.js"></script>
 </head>
 <body>
@@ -139,7 +140,7 @@
     return sendJSON('POST', baseUrl + 'ShareBill/apply/' + systemMessageId + '/reject', true, '', sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
   }
 
-  let websocket = new WebSocket('ws://localhost:8080/ws/system/' + sessionStorage.getItem('userId'));
+  let websocket = new WebSocket(wsBaseUrl + 'ws/system/' + sessionStorage.getItem('userId'));
   websocket.onerror = function () {
     alert('WebSocket创建错误');
   }

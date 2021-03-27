@@ -1,4 +1,5 @@
 let baseUrl = 'http://localhost:8080/'
+let wsBaseUrl = 'ws://localhost:8080/'
 
 function sendJSON(method, url, async, data, id, token) {
   let res;
