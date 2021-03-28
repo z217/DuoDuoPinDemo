@@ -1,12 +1,12 @@
 package com.duoduopin.manager.impl;
 
+import com.alibaba.fastjson.support.spring.FastJsonRedisSerializer;
 import com.duoduopin.bean.User;
 import com.duoduopin.config.DuoDuoPinUtils;
 import com.duoduopin.manager.TokenManager;
 import com.duoduopin.model.TokenModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -20,9 +20,9 @@ public class RedisTokenManagerImpl implements TokenManager {
   public void setRedisTemplate(RedisTemplate redisTemplate) {
     this.redisTemplate = redisTemplate;
     //    更改redis序列化方案
-    redisTemplate.setKeySerializer(new Jackson2JsonRedisSerializer<>(Object.class));
+    redisTemplate.setKeySerializer(new FastJsonRedisSerializer<>(Object.class));
   }
-  
+
   @Override
   public TokenModel createToken(User user) {
     String token = UUID.randomUUID().toString().replace("-", "");
