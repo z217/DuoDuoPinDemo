@@ -25,9 +25,9 @@
       username: username,
       password: password
     });
-    sessionStorage.setItem('userId', res.content.userId);
-    sessionStorage.setItem('token', res.content.token);
-    sessionStorage.setItem('nickname', res.content.nickname);
+    sessionStorage.setItem('userId', res.content.tokenModel.userId);
+    sessionStorage.setItem('token', res.content.tokenModel.token);
+    sessionStorage.setItem('nickname', res.content.tokenModel.nickname);
     window.location.href = "sharebill/search.html";
   }
 </script>

@@ -33,7 +33,7 @@
       longitude: longitude,
       latitude: latitude,
       distance: distance === 'null' ? null : distance,
-    }, sessionStorage.getItem('userId'), sessionStorage.getItem('token'));
+    }, sessionStorage.getItem('userId'), sessionStorage.getItem('token')).content;
     let table = $('#search-result > table');
     table.html('<tr>\n' +
       '      <td>描述</td>\n' +

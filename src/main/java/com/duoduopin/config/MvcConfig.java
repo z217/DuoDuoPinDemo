@@ -22,6 +22,7 @@ import java.util.List;
  * @date 2021/03/28
  * @see com.duoduopin.resolver.CurrentUserMethodArgumentResolver
  * @see com.duoduopin.interceptor.AuthorizationInterceptor
+ * @see com.duoduopin.interceptor.AdministratorInterceptor
  */
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
